@@ -59,15 +59,6 @@ resize();
 
 function rand(a, b) { return Math.random() * (b - a) + a; }
 
-/* ---------- Helpers ---------- */
-const seededRandom = (() => {
-  let seed = 1337;
-  return () => {
-    seed = (seed * 16807 + 0) % 2147483647;
-    return (seed - 1) / 2147483646;
-  };
-})();
-
 function hexToRgba(hex, a) {
   const r = parseInt(hex.slice(1,3), 16);
   const g = parseInt(hex.slice(3,5), 16);
@@ -75,31 +66,31 @@ function hexToRgba(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-/* ---------- Background Gradient (rich teals) ---------- */
+/* ---------- Background (rich teal gradient) ---------- */
 function drawBackground() {
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#1a7a6a');
-  bg.addColorStop(0.15, '#147a5e');
-  bg.addColorStop(0.35, '#0f5a4a');
-  bg.addColorStop(0.6, '#0a3d30');
-  bg.addColorStop(0.85, '#052018');
+  bg.addColorStop(0.12, '#168a6e');
+  bg.addColorStop(0.3, '#0f5a4a');
+  bg.addColorStop(0.55, '#0a3d30');
+  bg.addColorStop(0.8, '#052018');
   bg.addColorStop(1, '#010b06');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 }
 
-/* ---------- God Rays (soft, volumetric, dusty) ---------- */
+/* ---------- Dramatic God Rays (defined volumetric cones) ---------- */
 const rays = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 11; i++) {
   rays.push({
     x: rand(W * 0.02, W * 0.98),
-    topWidth: rand(50, 180),
-    bottomWidth: rand(200, 450),
-    angle: rand(-0.15, 0.15),
+    topWidth: rand(30, 120),
+    bottomWidth: rand(250, 500),
+    angle: rand(-0.18, 0.18),
     phase: rand(0, Math.PI * 2),
-    baseOpacity: rand(0.05, 0.12),
-    speed: rand(0.0002, 0.0005),
-    color: Math.random() > 0.5 ? '200,255,240' : '160,240,220'
+    baseOpacity: rand(0.08, 0.18),
+    speed: rand(0.00015, 0.0004),
+    color: Math.random() > 0.5 ? '210,255,240' : '170,245,225'
   });
 }
 
@@ -107,15 +98,15 @@ function drawGodRays(t) {
   ctx.save();
   ctx.globalCompositeOperation = 'screen';
   rays.forEach((r, idx) => {
-    const x = r.x + Math.sin(t * r.speed * 2 + r.phase) * 60;
-    const flicker = 0.5 + 0.5 * Math.sin(t * r.speed * 5 + r.phase);
-    const topW = r.topWidth * (0.85 + 0.15 * Math.sin(t * 0.0003 + idx));
+    const x = r.x + Math.sin(t * r.speed * 2.5 + r.phase) * 70;
+    const flicker = 0.4 + 0.6 * Math.sin(t * r.speed * 6 + r.phase);
+    const topW = r.topWidth * (0.8 + 0.2 * Math.sin(t * 0.00025 + idx));
 
     const grad = ctx.createLinearGradient(x, 0, x + Math.tan(r.angle) * H, H);
     grad.addColorStop(0, `rgba(${r.color}, ${r.baseOpacity * flicker})`);
-    grad.addColorStop(0.25, `rgba(${r.color}, ${r.baseOpacity * 0.7 * flicker})`);
-    grad.addColorStop(0.55, `rgba(${r.color}, ${r.baseOpacity * 0.35 * flicker})`);
-    grad.addColorStop(0.85, `rgba(${r.color}, ${r.baseOpacity * 0.1 * flicker})`);
+    grad.addColorStop(0.2, `rgba(${r.color}, ${r.baseOpacity * 0.85 * flicker})`);
+    grad.addColorStop(0.45, `rgba(${r.color}, ${r.baseOpacity * 0.5 * flicker})`);
+    grad.addColorStop(0.75, `rgba(${r.color}, ${r.baseOpacity * 0.2 * flicker})`);
     grad.addColorStop(1, `rgba(${r.color}, 0)`);
 
     ctx.fillStyle = grad;
@@ -128,28 +119,31 @@ function drawGodRays(t) {
     ctx.fill();
   });
   ctx.restore();
+
+  // Dust motes inside rays
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 60; i++) {
+    const mx = rand(0, W);
+    const my = rand(0, H * 0.5);
+    const flicker = 0.3 + 0.7 * Math.sin(t * 0.001 + i);
+    ctx.fillStyle = `rgba(200, 255, 230, ${0.15 * flicker})`;
+    ctx.beginPath();
+    ctx.arc(mx, my, rand(0.5, 1.8), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
 }
 
-/* ---------- Caustics on surface and seabed ---------- */
+/* ---------- Surface Caustics ---------- */
 const caustics = [];
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 22; i++) {
   caustics.push({
     x: rand(0, W),
-    y: rand(0, H * 0.35),
-    r: rand(60, 140),
-    dx: rand(0.2, 0.6),
-    dy: rand(0.05, 0.15),
-    phase: rand(0, Math.PI * 2)
-  });
-}
-
-const seabedCaustics = [];
-for (let i = 0; i < 14; i++) {
-  seabedCaustics.push({
-    x: rand(0, W),
-    y: rand(H * 0.75, H * 0.98),
-    r: rand(30, 70),
-    dx: rand(0.15, 0.4),
+    y: rand(0, H * 0.3),
+    r: rand(50, 130),
+    dx: rand(0.25, 0.7),
+    dy: rand(0.05, 0.18),
     phase: rand(0, Math.PI * 2)
   });
 }
@@ -158,12 +152,12 @@ function drawCaustics(t) {
   ctx.save();
   ctx.globalCompositeOperation = 'overlay';
   caustics.forEach((c, i) => {
-    const cx = ((c.x + t * c.dx + i * 100) % (W + 300)) - 150;
-    const cy = ((c.y + t * c.dy) % (H * 0.4));
-    const flicker = 0.5 + 0.5 * Math.sin(t * 0.001 + c.phase);
+    const cx = ((c.x + t * c.dx + i * 130) % (W + 350)) - 175;
+    const cy = ((c.y + t * c.dy) % (H * 0.35));
+    const flicker = 0.4 + 0.6 * Math.sin(t * 0.001 + c.phase);
     const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, c.r);
-    grad.addColorStop(0, `rgba(220, 255, 240, ${0.07 * flicker})`);
-    grad.addColorStop(0.4, `rgba(160, 240, 210, ${0.03 * flicker})`);
+    grad.addColorStop(0, `rgba(230, 255, 245, ${0.08 * flicker})`);
+    grad.addColorStop(0.4, `rgba(170, 240, 210, ${0.04 * flicker})`);
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
@@ -173,104 +167,135 @@ function drawCaustics(t) {
   ctx.restore();
 }
 
-function drawSeabedCaustics(t) {
-  ctx.save();
-  ctx.globalCompositeOperation = 'overlay';
-  seabedCaustics.forEach((c, i) => {
-    const cx = ((c.x + t * c.dx) % (W + 200)) - 100;
-    const flicker = 0.5 + 0.5 * Math.sin(t * 0.0015 + c.phase);
-    const grad = ctx.createRadialGradient(cx, c.y, 0, cx, c.y, c.r);
-    grad.addColorStop(0, `rgba(200, 255, 230, ${0.14 * flicker})`);
-    grad.addColorStop(0.5, `rgba(120, 230, 190, ${0.06 * flicker})`);
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, c.y, c.r, 0, Math.PI * 2);
-    ctx.fill();
+/* ---------- Seabed with Sand Dunes, Caustics, Rocks ---------- */
+const seabedCaustics = [];
+for (let i = 0; i < 18; i++) {
+  seabedCaustics.push({
+    x: rand(0, W),
+    y: rand(H * 0.72, H * 0.98),
+    rx: rand(40, 90),
+    ry: rand(15, 35),
+    dx: rand(0.2, 0.5),
+    phase: rand(0, Math.PI * 2)
   });
-  ctx.restore();
 }
 
-/* ---------- Seabed ---------- */
 function drawSeabed(t) {
-  // Base sand
-  const sandGrad = ctx.createLinearGradient(0, H * 0.72, 0, H);
-  sandGrad.addColorStop(0, '#1e3020');
-  sandGrad.addColorStop(0.3, '#a89868');
-  sandGrad.addColorStop(0.7, '#d4c49a');
-  sandGrad.addColorStop(1, '#8a7a52');
-  ctx.fillStyle = sandGrad;
-  ctx.fillRect(0, H * 0.72, W, H * 0.28);
+  // Sand base with dune shapes
+  ctx.fillStyle = '#1e3020';
+  ctx.fillRect(0, H * 0.68, W, H * 0.32);
+
+  // Sand dunes using bezier curves
+  ctx.fillStyle = '#b0a070';
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 40) {
+    const duneH = H * 0.72 + Math.sin(x * 0.008) * 18 + Math.sin(x * 0.018 + 1) * 8;
+    ctx.lineTo(x, duneH);
+  }
+  ctx.lineTo(W, H);
+  ctx.closePath();
+  ctx.fill();
+
+  // Lighter sand layer
+  ctx.fillStyle = '#d4c49a';
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 40) {
+    const duneH = H * 0.76 + Math.sin(x * 0.01 + 2) * 12 + Math.sin(x * 0.022) * 6;
+    ctx.lineTo(x, duneH);
+  }
+  ctx.lineTo(W, H);
+  ctx.closePath();
+  ctx.fill();
+
+  // Sand texture speckles
+  ctx.fillStyle = 'rgba(230, 210, 170, 0.14)';
+  for (let i = 0; i < 4000; i++) {
+    const sx = rand(0, W);
+    const sy = rand(H * 0.7, H);
+    ctx.fillRect(sx, sy, rand(1, 3), rand(1, 2));
+  }
+  ctx.fillStyle = 'rgba(90, 80, 55, 0.1)';
+  for (let i = 0; i < 2000; i++) {
+    const sx = rand(0, W);
+    const sy = rand(H * 0.7, H);
+    ctx.fillRect(sx, sy, rand(1, 2), rand(1, 2));
+  }
 
   // Sand ripples
-  ctx.strokeStyle = 'rgba(180, 165, 130, 0.15)';
-  ctx.lineWidth = 1.5;
-  for (let y = H * 0.74; y < H; y += 6) {
+  ctx.strokeStyle = 'rgba(190, 175, 140, 0.12)';
+  ctx.lineWidth = 1.2;
+  for (let y = H * 0.72; y < H; y += 8) {
     ctx.beginPath();
-    for (let x = 0; x <= W; x += 10) {
-      const ry = y + Math.sin(x * 0.02 + y * 0.1) * 3;
+    for (let x = 0; x <= W; x += 12) {
+      const ry = y + Math.sin(x * 0.025 + y * 0.12) * 3.5 + Math.cos(x * 0.01) * 1.5;
       if (x === 0) ctx.moveTo(x, ry);
       else ctx.lineTo(x, ry);
     }
     ctx.stroke();
   }
 
-  // Sand speckles
-  ctx.fillStyle = 'rgba(220, 200, 160, 0.12)';
-  for (let i = 0; i < 3000; i++) {
-    const sx = rand(0, W);
-    const sy = rand(H * 0.72, H);
-    ctx.fillRect(sx, sy, rand(1, 3), rand(1, 2));
-  }
-  ctx.fillStyle = 'rgba(100, 90, 65, 0.1)';
-  for (let i = 0; i < 1500; i++) {
-    const sx = rand(0, W);
-    const sy = rand(H * 0.72, H);
-    ctx.fillRect(sx, sy, rand(1, 2), rand(1, 2));
-  }
-
-  // Larger rocks with detail
-  for (let i = 0; i < 12; i++) {
-    const rx = rand(-50, W + 50);
-    const ry = H * 0.78 + rand(-15, 30);
-    const rw = rand(40, 120);
-    const rh = rand(25, 70);
-    ctx.fillStyle = '#3d3020';
+  // Rocks with detail
+  const rockColors = ['#4a3b28', '#3d3020', '#524230', '#352a1c'];
+  for (let i = 0; i < 14; i++) {
+    const rx = rand(-60, W + 60);
+    const ry = H * 0.76 + rand(-20, 40);
+    const rw = rand(35, 110);
+    const rh = rand(20, 65);
+    ctx.fillStyle = rockColors[i % rockColors.length];
     ctx.beginPath();
     ctx.moveTo(rx, ry);
-    ctx.lineTo(rx + rw * 0.25, ry - rh * 0.85);
-    ctx.lineTo(rx + rw * 0.6, ry - rh);
-    ctx.lineTo(rx + rw * 0.85, ry - rh * 0.75);
+    ctx.lineTo(rx + rw * 0.2, ry - rh * 0.9);
+    ctx.lineTo(rx + rw * 0.5, ry - rh);
+    ctx.lineTo(rx + rw * 0.75, ry - rh * 0.8);
     ctx.lineTo(rx + rw, ry);
     ctx.closePath();
     ctx.fill();
-    // Rock shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    // Shadow side
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
     ctx.beginPath();
     ctx.moveTo(rx, ry);
-    ctx.lineTo(rx + rw * 0.25, ry - rh * 0.85);
-    ctx.lineTo(rx + rw * 0.5, ry - rh * 0.5);
+    ctx.lineTo(rx + rw * 0.2, ry - rh * 0.9);
+    ctx.lineTo(rx + rw * 0.45, ry - rh * 0.5);
     ctx.lineTo(rx + rw, ry);
     ctx.closePath();
     ctx.fill();
-    // Rock highlight
-    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    // Highlight edge
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
     ctx.beginPath();
-    ctx.moveTo(rx + rw * 0.3, ry - rh * 0.2);
-    ctx.lineTo(rx + rw * 0.4, ry - rh * 0.8);
+    ctx.moveTo(rx + rw * 0.22, ry - rh * 0.15);
+    ctx.lineTo(rx + rw * 0.35, ry - rh * 0.85);
     ctx.lineTo(rx + rw * 0.55, ry - rh * 0.2);
     ctx.closePath();
     ctx.fill();
   }
+
+  // Seabed caustics
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  seabedCaustics.forEach((c, i) => {
+    const cx = ((c.x + t * c.dx) % (W + 250)) - 125;
+    const flicker = 0.4 + 0.6 * Math.sin(t * 0.0018 + c.phase);
+    const grad = ctx.createRadialGradient(cx, c.y, 0, cx, c.y, c.rx);
+    grad.addColorStop(0, `rgba(200, 255, 230, ${0.18 * flicker})`);
+    grad.addColorStop(0.4, `rgba(140, 235, 200, ${0.08 * flicker})`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.ellipse(cx, c.y, c.rx, c.ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.restore();
 }
 
 /* ---------- Seabed Flora ---------- */
 const seabedPlants = [];
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 55; i++) {
   seabedPlants.push({
     x: rand(0, W),
-    y: rand(H * 0.78, H * 0.97),
-    height: rand(12, 40),
+    y: rand(H * 0.76, H * 0.97),
+    height: rand(10, 42),
     color: Math.random() > 0.5 ? '#2d8a5e' : '#3a7a4d',
     type: Math.random() > 0.5 ? 'fern' : 'grass',
     swayPhase: rand(0, Math.PI * 2)
@@ -279,7 +304,7 @@ for (let i = 0; i < 50; i++) {
 
 function drawSeabedPlants(t) {
   seabedPlants.forEach(p => {
-    const sway = Math.sin(t * 0.0008 + p.swayPhase) * 10;
+    const sway = Math.sin(t * 0.0008 + p.swayPhase) * 12;
     ctx.strokeStyle = p.color;
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
@@ -293,144 +318,159 @@ function drawSeabedPlants(t) {
         ctx.lineTo(px, py);
         ctx.save();
         ctx.translate(px, py);
-        ctx.rotate((sway > 0 ? 0.7 : -0.7) + Math.sin(t * 0.0015 + s) * 0.25);
+        ctx.rotate((sway > 0 ? 0.75 : -0.75) + Math.sin(t * 0.0015 + s) * 0.28);
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.ellipse(10, 0, 12, 4, 0, 0, Math.PI * 2);
+        ctx.ellipse(11, 0, 13, 4.5, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
     } else {
-      ctx.quadraticCurveTo(p.x + sway, p.y - p.height * 0.5, p.x + sway * 1.8, p.y - p.height);
+      ctx.quadraticCurveTo(p.x + sway, p.y - p.height * 0.5, p.x + sway * 2.2, p.y - p.height);
     }
     ctx.stroke();
     ctx.globalAlpha = 1;
   });
 }
 
-/* ---------- Creepvines (with iconic seed clusters) ---------- */
+/* ---------- Creepvines (broad ribbon-like with iconic seed clusters) ---------- */
 const creepvines = [];
-for (let i = 0; i < 32; i++) {
+for (let i = 0; i < 34; i++) {
   creepvines.push({
     x: rand(0, W),
-    baseY: H + rand(10, 60),
-    height: rand(H * 0.45, H * 1.15),
-    stalkWidth: rand(3, 9),
-    segments: Math.floor(rand(12, 26)),
-    swaySpeed: rand(0.0006, 0.0018),
+    baseY: H + rand(10, 50),
+    height: rand(H * 0.5, H * 1.15),
+    stalkWidth: rand(6, 14),
+    segments: Math.floor(rand(14, 28)),
+    swaySpeed: rand(0.0005, 0.0016),
     swayPhase: rand(0, Math.PI * 2),
-    seedCluster: true, // Most have seeds
-    seedCount: Math.floor(rand(2, 5)),
+    seedCluster: true,
     seedSide: Math.random() > 0.5 ? 1 : -1
   });
 }
 
 function drawCreepvines(t) {
   creepvines.forEach((vine, vidx) => {
-    const mainSway = Math.sin(t * vine.swaySpeed + vine.swayPhase) * 55;
-    const secSway = Math.sin(t * vine.swaySpeed * 1.4 + vine.swayPhase + 1.5) * 22;
+    const mainSway = Math.sin(t * vine.swaySpeed + vine.swayPhase) * 60;
+    const secSway = Math.sin(t * vine.swaySpeed * 1.4 + vine.swayPhase + 1.8) * 25;
 
-    // Draw stalk with bezier for organic feel
-    ctx.strokeStyle = '#166a45';
-    ctx.lineWidth = vine.stalkWidth;
-    ctx.lineCap = 'round';
-    ctx.globalAlpha = 0.9;
+    // Draw broad ribbon stalk
+    ctx.fillStyle = '#145e3d';
     ctx.beginPath();
-    ctx.moveTo(vine.x, vine.baseY);
+    let prevX = vine.x, prevY = vine.baseY;
+    const leftPoints = [], rightPoints = [];
 
-    const points = [];
-    for (let s = 1; s <= vine.segments; s++) {
+    for (let s = 0; s <= vine.segments; s++) {
       const progress = s / vine.segments;
       const px = vine.x + mainSway * progress + secSway * progress * progress;
       const py = vine.baseY - vine.height * progress;
-      points.push({x: px, y: py, p: progress});
-      ctx.lineTo(px, py);
+      const width = vine.stalkWidth * (1 - progress * 0.35);
+      const nx = px + Math.cos(progress * Math.PI) * width * 0.3;
+      const angle = Math.atan2(py - prevY, px - prevX) + Math.PI / 2;
+      leftPoints.push({x: nx + Math.cos(angle) * width * 0.5, y: py + Math.sin(angle) * width * 0.5, p: progress});
+      rightPoints.push({x: nx - Math.cos(angle) * width * 0.5, y: py - Math.sin(angle) * width * 0.5, p: progress});
+      prevX = px; prevY = py;
     }
-    ctx.stroke();
-    ctx.globalAlpha = 1;
 
-    // Broad flat leaves
-    points.forEach((pt, pi) => {
-      if (pi < 3 || pi > vine.segments - 3) return;
-      if ((vidx * 7 + pi * 13) % 3 !== 0) return;
+    ctx.moveTo(leftPoints[0].x, leftPoints[0].y);
+    for (let i = 1; i < leftPoints.length; i++) ctx.lineTo(leftPoints[i].x, leftPoints[i].y);
+    for (let i = rightPoints.length - 1; i >= 0; i--) ctx.lineTo(rightPoints[i].x, rightPoints[i].y);
+    ctx.closePath();
+    ctx.fill();
 
-      const leafSize = 20 * (1 - pt.p) + 7;
-      const leafAngle = Math.sin(t * 0.0008 + vidx + pi) * 0.35 + (mainSway > 0 ? 0.45 : -0.45);
+    // Stalk highlight
+    ctx.fillStyle = 'rgba(50, 160, 100, 0.25)';
+    ctx.beginPath();
+    ctx.moveTo(leftPoints[0].x, leftPoints[0].y);
+    for (let i = 1; i < leftPoints.length; i++) ctx.lineTo(leftPoints[i].x, leftPoints[i].y);
+    for (let i = Math.floor(rightPoints.length/2); i >= 0; i--) ctx.lineTo(rightPoints[i].x, rightPoints[i].y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Broad flat leaves along stalk
+    const leafPoints = leftPoints.concat(rightPoints);
+    leafPoints.forEach((pt, pi) => {
+      if (pt.p < 0.15 || pt.p > 0.92) return;
+      if ((vidx * 11 + pi * 17) % 4 !== 0) return;
+
+      const leafSize = 24 * (1 - pt.p) + 8;
+      const leafAngle = Math.sin(t * 0.0006 + vidx + pi) * 0.4 + (mainSway > 0 ? 0.5 : -0.5);
       ctx.save();
       ctx.translate(pt.x, pt.y);
       ctx.rotate(leafAngle);
-      ctx.fillStyle = `rgba(50, 160, 100, ${0.5 * (1 - pt.p) + 0.25})`;
+      ctx.fillStyle = `rgba(55, 170, 110, ${0.5 * (1 - pt.p) + 0.2})`;
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.bezierCurveTo(leafSize * 0.4, -leafSize * 0.12, leafSize * 1.1, -leafSize * 0.08, leafSize * 1.4, 0);
-      ctx.bezierCurveTo(leafSize * 1.1, leafSize * 0.08, leafSize * 0.4, leafSize * 0.12, 0, 0);
+      ctx.bezierCurveTo(leafSize * 0.4, -leafSize * 0.1, leafSize * 1.2, -leafSize * 0.06, leafSize * 1.6, 0);
+      ctx.bezierCurveTo(leafSize * 1.2, leafSize * 0.06, leafSize * 0.4, leafSize * 0.1, 0, 0);
       ctx.fill();
       ctx.restore();
     });
 
-    // CREEPVINE SEED CLUSTERS (iconic orange pods)
+    // CREEPVINE SEED CLUSTERS
     if (vine.seedCluster) {
-      const topIdx = Math.floor(vine.segments * rand(0.65, 0.95));
-      if (topIdx < points.length) {
-        const sp = points[topIdx];
+      const topIdx = Math.floor(vine.segments * rand(0.55, 0.92));
+      if (topIdx < leftPoints.length) {
+        const sp = leftPoints[topIdx];
         const side = vine.seedSide;
-        const pulse = 0.5 + 0.5 * Math.sin(t * 0.0025 + vidx);
+        const pulse = 0.5 + 0.5 * Math.sin(t * 0.002 + vidx);
 
-        // Outer glow/bloom
-        const glow = ctx.createRadialGradient(sp.x + side * 16, sp.y, 0, sp.x + side * 16, sp.y, 35);
-        glow.addColorStop(0, `rgba(255, 210, 80, ${pulse * 0.8})`);
-        glow.addColorStop(0.3, `rgba(255, 150, 30, ${pulse * 0.45})`);
-        glow.addColorStop(0.7, `rgba(255, 100, 10, ${pulse * 0.15})`);
+        // Outer glow
+        const glow = ctx.createRadialGradient(sp.x + side * 18, sp.y, 0, sp.x + side * 18, sp.y, 40);
+        glow.addColorStop(0, `rgba(255, 210, 70, ${pulse * 0.85})`);
+        glow.addColorStop(0.25, `rgba(255, 150, 30, ${pulse * 0.5})`);
+        glow.addColorStop(0.6, `rgba(255, 100, 10, ${pulse * 0.2})`);
         glow.addColorStop(1, 'rgba(255, 80, 0, 0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(sp.x + side * 16, sp.y, 35, 0, Math.PI * 2);
+        ctx.arc(sp.x + side * 18, sp.y, 40, 0, Math.PI * 2);
         ctx.fill();
 
-        // Cluster of 3-4 pods
-        const podOffsets = [
-          {dx: 8, dy: 0, r: 7},
-          {dx: 18, dy: -5, r: 6},
-          {dx: 16, dy: 6, r: 5.5},
-          {dx: 24, dy: 0, r: 4.5}
+        // Organic pod cluster (asymmetric)
+        const pods = [
+          {dx: 10, dy: 0, r: 8},
+          {dx: 20, dy: -6, r: 6.5},
+          {dx: 18, dy: 7, r: 6},
+          {dx: 26, dy: 2, r: 5},
+          {dx: 14, dy: -10, r: 4.5}
         ];
-        podOffsets.forEach(po => {
-          ctx.fillStyle = `rgba(255, 220, 100, ${pulse * 0.9})`;
+        pods.forEach(po => {
+          ctx.fillStyle = `rgba(255, 225, 90, ${pulse * 0.92})`;
           ctx.beginPath();
           ctx.arc(sp.x + side * po.dx, sp.y + po.dy, po.r, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = `rgba(255, 180, 40, ${pulse * 0.7})`;
+          ctx.fillStyle = `rgba(255, 170, 40, ${pulse * 0.75})`;
           ctx.beginPath();
-          ctx.arc(sp.x + side * po.dx - 1, sp.y + po.dy - 1, po.r * 0.6, 0, Math.PI * 2);
+          ctx.arc(sp.x + side * po.dx - 1, sp.y + po.dy - 1, po.r * 0.55, 0, Math.PI * 2);
           ctx.fill();
         });
 
-        // Bright core sparkle
+        // Bright core
         ctx.fillStyle = `rgba(255, 255, 230, ${pulse})`;
         ctx.beginPath();
-        ctx.arc(sp.x + side * 10, sp.y, 2.5, 0, Math.PI * 2);
+        ctx.arc(sp.x + side * 12, sp.y, 3, 0, Math.PI * 2);
         ctx.fill();
       }
     }
   });
 }
 
-/* ---------- Small Fish (Peepers / generic schools) ---------- */
+/* ---------- Peeper-like Fish Schools ---------- */
 const fishSchools = [];
 for (let i = 0; i < 5; i++) {
-  const count = Math.floor(rand(6, 16));
+  const count = Math.floor(rand(5, 14));
   const fish = [];
   for (let j = 0; j < count; j++) {
     fish.push({
-      ox: rand(-40, 40),
-      oy: rand(-20, 20),
-      size: rand(2, 4),
+      ox: rand(-45, 45),
+      oy: rand(-22, 22),
+      size: rand(2.5, 4.5),
     });
   }
   fishSchools.push({
     x: rand(0, W),
-    y: rand(H * 0.15, H * 0.65),
-    vx: rand(0.4, 1.0) * (Math.random() > 0.5 ? 1 : -1),
+    y: rand(H * 0.12, H * 0.62),
+    vx: rand(0.5, 1.2) * (Math.random() > 0.5 ? 1 : -1),
     fish: fish
   });
 }
@@ -441,29 +481,34 @@ function drawFish(t) {
     if (school.x > W + 120) school.x = -120;
     if (school.x < -120) school.x = W + 120;
 
-    const schoolSway = Math.sin(t * 0.0008 + school.y) * 15;
+    const schoolSway = Math.sin(t * 0.0008 + school.y) * 12;
 
     school.fish.forEach(f => {
-      const fx = school.x + f.ox + Math.sin(t * 0.002 + f.oy) * 12;
-      const fy = school.y + f.oy + schoolSway + Math.cos(t * 0.0015 + f.ox) * 6;
+      const fx = school.x + f.ox + Math.sin(t * 0.002 + f.oy) * 10;
+      const fy = school.y + f.oy + schoolSway + Math.cos(t * 0.0015 + f.ox) * 5;
+      const dir = school.vx > 0 ? 1 : -1;
 
-      // Body
-      ctx.fillStyle = 'rgba(140, 220, 255, 0.55)';
+      // Body (Peeper-ish: oval with big eye)
+      ctx.fillStyle = 'rgba(140, 220, 255, 0.6)';
       ctx.beginPath();
-      ctx.ellipse(fx, fy, f.size * 2.2, f.size, 0, 0, Math.PI * 2);
+      ctx.ellipse(fx, fy, f.size * 2.5, f.size * 1.1, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Tail
-      ctx.fillStyle = 'rgba(120, 200, 240, 0.45)';
+      // Tail fin
+      ctx.fillStyle = 'rgba(120, 200, 240, 0.5)';
       ctx.beginPath();
-      ctx.moveTo(fx - f.size * 1.6, fy);
-      ctx.lineTo(fx - f.size * 3.2, fy - f.size * 0.9);
-      ctx.lineTo(fx - f.size * 3.2, fy + f.size * 0.9);
+      ctx.moveTo(fx - dir * f.size * 1.8, fy);
+      ctx.lineTo(fx - dir * f.size * 3.4, fy - f.size * 0.9);
+      ctx.lineTo(fx - dir * f.size * 3.4, fy + f.size * 0.9);
       ctx.closePath();
       ctx.fill();
-      // Eye
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      // Large eye (Peeper signature)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.beginPath();
-      ctx.arc(fx + f.size * 0.8, fy - f.size * 0.3, f.size * 0.35, 0, Math.PI * 2);
+      ctx.arc(fx + dir * f.size * 1.1, fy - f.size * 0.25, f.size * 0.65, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(60, 180, 255, 0.9)';
+      ctx.beginPath();
+      ctx.arc(fx + dir * f.size * 1.15, fy - f.size * 0.22, f.size * 0.35, 0, Math.PI * 2);
       ctx.fill();
     });
   });
@@ -471,13 +516,13 @@ function drawFish(t) {
 
 /* ---------- Bubbles ---------- */
 const bubbles = [];
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 80; i++) {
   bubbles.push({
     x: rand(0, W),
-    y: rand(H * 0.3, H),
-    r: rand(1.5, 5),
-    vy: rand(-1.2, -3.5),
-    wobble: rand(0.0008, 0.002),
+    y: rand(H * 0.25, H),
+    r: rand(1.5, 5.5),
+    vy: rand(-1.2, -4),
+    wobble: rand(0.0007, 0.002),
     phase: rand(0, Math.PI * 2)
   });
 }
@@ -485,41 +530,40 @@ for (let i = 0; i < 70; i++) {
 function drawBubbles(t) {
   bubbles.forEach(b => {
     b.y += b.vy;
-    b.x += Math.sin(t * b.wobble + b.phase) * 1.0;
+    b.x += Math.sin(t * b.wobble + b.phase) * 1.2;
     if (b.y < -20) { b.y = H + 20; b.x = rand(0, W); }
 
-    ctx.strokeStyle = 'rgba(200, 255, 240, 0.4)';
-    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = 'rgba(210, 255, 245, 0.45)';
+    ctx.lineWidth = 1.3;
     ctx.beginPath();
     ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
     ctx.stroke();
-    // Highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.beginPath();
     ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.4, 0, Math.PI * 2);
     ctx.fill();
   });
 }
 
-/* ---------- Marine Snow Particles ---------- */
+/* ---------- Marine Snow / Particles ---------- */
 const particles = [];
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 550; i++) {
   particles.push({
     x: rand(0, W),
     y: rand(0, H),
-    r: rand(0.3, 2.0),
-    vy: rand(-0.3, -1.2),
-    vx: rand(-0.25, 0.25),
-    alpha: rand(0.15, 0.6),
+    r: rand(0.3, 2.2),
+    vy: rand(-0.3, -1.3),
+    vx: rand(-0.3, 0.3),
+    alpha: rand(0.15, 0.65),
     phase: rand(0, Math.PI * 2),
-    color: Math.random() > 0.75 ? '255, 230, 160' : '180, 255, 220'
+    color: Math.random() > 0.8 ? '255, 230, 160' : '180, 255, 220'
   });
 }
 
 function drawParticles(t) {
   particles.forEach(p => {
     p.y += p.vy;
-    p.x += p.vx + Math.sin(t * 0.0006 + p.phase) * 0.35;
+    p.x += p.vx + Math.sin(t * 0.0006 + p.phase) * 0.4;
     if (p.y < -10) { p.y = H + 10; p.x = rand(0, W); }
     if (p.x < -10) p.x = W + 10;
     if (p.x > W + 10) p.x = -10;
@@ -534,11 +578,11 @@ function drawParticles(t) {
 
 /* ---------- Ground Bioluminescent Flora ---------- */
 const glowPods = [];
-for (let i = 0; i < 22; i++) {
+for (let i = 0; i < 24; i++) {
   glowPods.push({
     x: rand(0, W),
-    y: rand(H * 0.75, H * 0.96),
-    r: rand(2, 5),
+    y: rand(H * 0.73, H * 0.96),
+    r: rand(2, 5.5),
     color: Math.random() > 0.35 ? '#ffaa22' : '#44ddaa',
     pulseSpeed: rand(0.0015, 0.004),
     phase: rand(0, Math.PI * 2)
@@ -565,19 +609,19 @@ function drawGlowPods(t) {
   });
 }
 
-/* ---------- Volumetric Depth Fog ---------- */
+/* ---------- Volumetric Fog ---------- */
 function drawFog() {
   const vgrad = ctx.createLinearGradient(0, 0, 0, H);
-  vgrad.addColorStop(0, 'rgba(2, 20, 12, 0.02)');
-  vgrad.addColorStop(0.35, 'rgba(2, 20, 12, 0.12)');
-  vgrad.addColorStop(0.7, 'rgba(2, 20, 12, 0.45)');
+  vgrad.addColorStop(0, 'rgba(2, 20, 12, 0.03)');
+  vgrad.addColorStop(0.3, 'rgba(2, 20, 12, 0.1)');
+  vgrad.addColorStop(0.65, 'rgba(2, 20, 12, 0.4)');
   vgrad.addColorStop(1, 'rgba(2, 20, 12, 0.78)');
   ctx.fillStyle = vgrad;
   ctx.fillRect(0, 0, W, H);
 
-  const cgrad = ctx.createRadialGradient(W / 2, H * 0.4, H * 0.2, W / 2, H * 0.4, H * 0.9);
+  const cgrad = ctx.createRadialGradient(W / 2, H * 0.35, H * 0.2, W / 2, H * 0.35, H * 0.9);
   cgrad.addColorStop(0, 'rgba(2, 20, 12, 0)');
-  cgrad.addColorStop(1, 'rgba(2, 20, 12, 0.45)');
+  cgrad.addColorStop(1, 'rgba(2, 20, 12, 0.5)');
   ctx.fillStyle = cgrad;
   ctx.fillRect(0, 0, W, H);
 }
@@ -588,7 +632,6 @@ function draw(t) {
   drawGodRays(t);
   drawCaustics(t);
   drawSeabed(t);
-  drawSeabedCaustics(t);
   drawGlowPods(t);
   drawSeabedPlants(t);
   drawCreepvines(t);
