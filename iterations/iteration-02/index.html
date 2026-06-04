@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subnautica HUD Reproduction</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  body {
+    background: #000;
+    overflow: hidden;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0f7ff;
+  }
+  canvas#world { display: block; width: 100vw; height: 100vh; }
+
+  /* ---------- Global Overlays ---------- */
+  #vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%);
+    pointer-events: none; z-index: 10;
+  }
+  #scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,210,255,0.018) 3px, rgba(0,210,255,0.018) 6px);
+    pointer-events: none; z-index: 11;
+    animation: scanFlicker 6s infinite;
+  }
+  @keyframes scanFlicker {
+    0%,96%,98% { opacity: 1; }
+    97% { opacity: 0.6; }
+  }
+  #hud-glow {
+    position: fixed; inset: 0;
+    box-shadow: inset 0 0 120px rgba(0,160,200,0.06);
+    pointer-events: none; z-index: 9;
+  }
+
+  /* ---------- HUD Panels ---------- */
+  .hud-panel {
+    background: rgba(0, 18, 32, 0.55);
+    border: 1px solid rgba(0, 210, 255, 0.22);
+    backdrop-filter: blur(8px);
+    border-radius: 6px;
+    position: fixed;
+    z-index: 20;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  /* ---------- Top Left: Vitals ---------- */
+  #vitals {
+    top: 24px; left: 24px;
+    padding: 14px 18px;
+    min-width: 220px;
+  }
+  .vital-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .vital-row:last-child { margin-bottom: 0; }
+  .vital-label {
+    width: 58px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    font-size: 0.65rem;
+    color: rgba(224,247,255,0.55);
+  }
+  .vital-bar-bg {
+    flex: 1;
+    height: 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .vital-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+  .vital-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
+  }
+  .o2-fill { background: linear-gradient(90deg, #0088aa, #00d2ff); box-shadow: 0 0 8px rgba(0,210,255,0.35); }
+  .hp-fill { background: linear-gradient(90deg, #cc3300, #ff6633); box-shadow: 0 0 8px rgba(255,102,51,0.3); }
+  .food-fill { background: linear-gradient(90deg, #cc8800, #ffaa33); }
+  .water-fill { background: linear-gradient(90deg, #0077aa, #33aadd); }
+  .vital-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    min-width: 30px;
+    text-align: right;
+    opacity: 0.7;
+  }
+
+  /* ---------- Top Center: Compass ---------- */
+  #compass-wrap {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    pointer-events: none;
+  }
+  #compass {
+    width: 320px;
+    height: 32px;
+    background: rgba(0, 18, 32, 0.45);
+    border: 1px solid rgba(0, 210, 255, 0.18);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(4px);
+  }
+  #compass-ticks {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    will-change: transform;
+  }
+  .tick {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    background: rgba(0, 210, 255, 0.35);
+  }
+  .tick.major {
+    height: 14px;
+    background: rgba(0, 210, 255, 0.6);
+  }
+  .tick-label {
+    position: absolute;
+    bottom: 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(0, 210, 255, 0.6);
+    transform: translateX(-50%);
+  }
+  #compass-needle {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 2px; height: 100%;
+    background: linear-gradient(to bottom, rgba(255,80,60,0.8), transparent 80%);
+  }
+  #compass-needle::after {
+    content: '';
+    position: absolute;
+    top: -6px; left: 50%;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid #ff503c;
+  }
+
+  /* ---------- Right: Depth Meter ---------- */
+  #depth-panel {
+    top: 50%; right: 24px;
+    transform: translateY(-50%);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  #depth-bar {
+    width: 8px;
+    height: 180px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  #depth-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, #00d2ff, #0066aa);
+    border-radius: 4px;
+    transition: height 0.4s ease;
+    box-shadow: 0 0 10px rgba(0,210,255,0.25);
+  }
+  #depth-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #00d2ff;
+    text-shadow: 0 0 8px rgba(0,210,255,0.4);
+    letter-spacing: 1px;
+  }
+  #depth-unit {
+    font-size: 0.6rem;
+    opacity: 0.5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Bottom Center: Hotbar ---------- */
+  #hotbar {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .slot {
+    width: 54px; height: 54px;
+    background: rgba(0, 18, 32, 0.5);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    backdrop-filter: blur(4px);
+    transition: all 0.15s;
+  }
+  .slot.active {
+    border-color: rgba(0, 210, 255, 0.7);
+    box-shadow: 0 0 14px rgba(0,210,255,0.25), inset 0 0 10px rgba(0,210,255,0.08);
+  }
+  .slot-num {
+    position: absolute;
+    top: 3px; left: 5px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    color: rgba(224,247,255,0.35);
+  }
+  .slot-icon {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 3px rgba(0,210,255,0.3));
+  }
+  .slot.empty { border-style: dashed; opacity: 0.4; }
+
+  /* ---------- Center: Crosshair ---------- */
+  #crosshair {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    pointer-events: none;
+    width: 24px; height: 24px;
+  }
+  #crosshair svg {
+    width: 100%; height: 100%;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+  }
+  #crosshair.interact svg { opacity: 0.9; }
+  #crosshair.interact .ch-ring { stroke: #ffaa33; }
+
+  /* ---------- Interaction Tooltip ---------- */
+  #tooltip {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, calc(-50% + 32px));
+    z-index: 25;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #tooltip.visible { opacity: 1; }
+  .bracket { color: rgba(0,210,255,0.5); font-size: 0.9rem; }
+  #tooltip-key {
+    background: rgba(0, 210, 255, 0.12);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: #00d2ff;
+  }
+  #tooltip-text {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(0,0,0,0.8);
+  }
+
+  /* ---------- Notifications ---------- */
+  #notifications {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    z-index: 30;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .toast {
+    background: rgba(0, 18, 32, 0.65);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    border-left: 3px solid #00d2ff;
+    border-radius: 4px;
+    padding: 10px 16px;
+    backdrop-filter: blur(6px);
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    max-width: 280px;
+    transform: translateX(40px);
+    opacity: 0;
+    animation: toastIn 0.4s forwards, toastOut 0.4s 4s forwards;
+  }
+  .toast.warn { border-left-color: #ffaa33; }
+  @keyframes toastIn {
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastOut {
+    to { transform: translateX(40px); opacity: 0; }
+  }
+
+  /* ---------- PDA Menu ---------- */
+  #pda-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 5, 10, 0.7);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #pda-overlay.open { opacity: 1; pointer-events: auto; }
+  #pda {
+    width: 700px; max-width: 90vw;
+    height: 480px; max-height: 80vh;
+    background: rgba(0, 16, 28, 0.85);
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,120,160,0.15);
+    transform: scale(0.96);
+    transition: transform 0.25s;
+  }
+  #pda-overlay.open #pda { transform: scale(1); }
+  #pda-header {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 20px;
+    height: 44px;
+    border-bottom: 1px solid rgba(0, 210, 255, 0.12);
+    background: rgba(0, 25, 40, 0.4);
+  }
+  .pda-tab {
+    padding: 0 18px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(224,247,255,0.4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pda-tab:hover { color: rgba(224,247,255,0.7); }
+  .pda-tab.active {
+    color: #00d2ff;
+    border-bottom-color: #00d2ff;
+    text-shadow: 0 0 8px rgba(0,210,255,0.3);
+  }
+  .pda-tab-icon { font-size: 0.9rem; }
+  #pda-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .pda-section h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #00d2ff;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pda-section h3::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,210,255,0.3), transparent);
+  }
+  .pda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pda-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+  }
+  .pda-item:hover {
+    background: rgba(0,210,255,0.06);
+    border-color: rgba(0,210,255,0.15);
+  }
+  .pda-item-icon {
+    font-size: 1.2rem;
+    width: 28px;
+    text-align: center;
+    opacity: 0.7;
+  }
+  .pda-item-meta {
+    margin-left: auto;
+    font-size: 0.7rem;
+    opacity: 0.4;
+    font-family: 'Orbitron', sans-serif;
+  }
+  #pda-close {
+    position: absolute;
+    top: 12px; right: 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    color: rgba(224,247,255,0.35);
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  #pda-close:hover { color: #00d2ff; }
+
+  /* ---------- Hints ---------- */
+  #hints {
+    position: fixed;
+    bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    font-size: 0.65rem;
+    opacity: 0.25;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    pointer-events: none;
+    display: flex;
+    gap: 20px;
+  }
+  #hints span { display: flex; align-items: center; gap: 4px; }
+  .key-hint {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+  }
+</style>
+</head>
+<body>
+<canvas id="world"></canvas>
+
+<div id="vignette"></div>
+<div id="scanlines"></div>
+<div id="hud-glow"></div>
+
+<!-- Vitals -->
+<div class="hud-panel" id="vitals">
+  <div class="vital-row">
+    <div class="vital-label">O₂</div>
+    <div class="vital-bar-bg"><div class="vital-bar-fill o2-fill" id="o2" style="width: 78%"></div></div>
+    <div class="vital-val" id="o2-val">78</div>
+  </div>
+  <div class="vital-row">
+    <div class="vital-label">HP</div>
+    <div class="vital-bar-bg"><div class="vital-bar-fill hp-fill" id="hp" style="width: 92%"></div></div>
+    <div class="vital-val" id="hp-val">92</div>
+  </div>
+  <div class="vital-row">
+    <div class="vital-label">Food</div>
+    <div class="vital-bar-bg"><div class="vital-bar-fill food-fill" id="food" style="width: 65%"></div></div>
+    <div class="vital-val" id="food-val">65</div>
+  </div>
+  <div class="vital-row">
+    <div class="vital-label">Water</div>
+    <div class="vital-bar-bg"><div class="vital-bar-fill water-fill" id="water" style="width: 54%"></div></div>
+    <div class="vital-val" id="water-val">54</div>
+  </div>
+</div>
+
+<!-- Compass -->
+<div id="compass-wrap">
+  <div id="compass">
+    <div id="compass-ticks"></div>
+    <div id="compass-needle"></div>
+  </div>
+</div>
+
+<!-- Depth -->
+<div class="hud-panel" id="depth-panel">
+  <div id="depth-num">45</div>
+  <div id="depth-unit">m</div>
+  <div id="depth-bar"><div id="depth-fill" style="height: 22%"></div></div>
+</div>
+
+<!-- Crosshair -->
+<div id="crosshair">
+  <svg viewBox="0 0 24 24">
+    <circle class="ch-ring" cx="12" cy="12" r="8" fill="none" stroke="rgba(0,210,255,0.6)" stroke-width="1"/>
+    <circle cx="12" cy="12" r="1.5" fill="rgba(0,210,255,0.8)"/>
+    <line x1="12" y1="2" x2="12" y2="6" stroke="rgba(0,210,255,0.35)" stroke-width="0.8"/>
+    <line x1="12" y1="18" x2="12" y2="22" stroke="rgba(0,210,255,0.35)" stroke-width="0.8"/>
+    <line x1="2" y1="12" x2="6" y2="12" stroke="rgba(0,210,255,0.35)" stroke-width="0.8"/>
+    <line x1="18" y1="12" x2="22" y2="12" stroke="rgba(0,210,255,0.35)" stroke-width="0.8"/>
+  </svg>
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip">
+  <span class="bracket">[</span>
+  <span id="tooltip-key">LMB</span>
+  <span class="bracket">]</span>
+  <span id="tooltip-text">Pick up Acid Mushroom</span>
+</div>
+
+<!-- Hotbar -->
+<div id="hotbar">
+  <div class="slot active" data-slot="1"><span class="slot-num">1</span><span class="slot-icon">🔪</span></div>
+  <div class="slot" data-slot="2"><span class="slot-num">2</span><span class="slot-icon">🔦</span></div>
+  <div class="slot" data-slot="3"><span class="slot-num">3</span><span class="slot-icon">🏗️</span></div>
+  <div class="slot empty" data-slot="4"><span class="slot-num">4</span></div>
+  <div class="slot empty" data-slot="5"><span class="slot-num">5</span></div>
+</div>
+
+<!-- Notifications -->
+<div id="notifications"></div>
+
+<!-- PDA -->
+<div id="pda-overlay">
+  <div id="pda">
+    <div id="pda-close">ESC / TAB</div>
+    <div id="pda-header">
+      <div class="pda-tab active" data-tab="data"><span class="pda-tab-icon">📊</span> Data</div>
+      <div class="pda-tab" data-tab="inventory"><span class="pda-tab-icon">🎒</span> Inventory</div>
+      <div class="pda-tab" data-tab="blueprints"><span class="pda-tab-icon">📐</span> Blueprints</div>
+      <div class="pda-tab" data-tab="map"><span class="pda-tab-icon">🗺️</span> Map</div>
+    </div>
+    <div id="pda-body">
+      <div class="pda-section" id="tab-data">
+        <h3>Survival Log</h3>
+        <div class="pda-list">
+          <div class="pda-item"><span class="pda-item-icon">📡</span> Aurora distress signal received<span class="pda-item-meta">Day 1</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🔥</span> Radiation detected in crash zone<span class="pda-item-meta">Day 1</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🌿</span> Creepvine sample analyzed<span class="pda-item-meta">Day 2</span></div>
+          <div class="pda-item"><span class="pda-item-icon">⚠️</span> Biome: Kelp Forest — moderate danger<span class="pda-item-meta">Day 2</span></div>
+        </div>
+      </div>
+      <div class="pda-section" id="tab-inventory" style="display:none">
+        <h3>Inventory</h3>
+        <div class="pda-list">
+          <div class="pda-item"><span class="pda-item-icon">🔪</span> Survival Knife<span class="pda-item-meta">x1</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🔦</span> Flashlight<span class="pda-item-meta">x1</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🧪</span> Titanium<span class="pda-item-meta">x4</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🧪</span> Copper Ore<span class="pda-item-meta">x2</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🍄</span> Acid Mushroom<span class="pda-item-meta">x3</span></div>
+        </div>
+      </div>
+      <div class="pda-section" id="tab-blueprints" style="display:none">
+        <h3>Fabricator Recipes</h3>
+        <div class="pda-list">
+          <div class="pda-item"><span class="pda-item-icon">🔋</span> Battery<span class="pda-item-meta">2 Acid Mushroom + 1 Copper</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🛶</span> Radiation Suit<span class="pda-item-meta">2 Fiber Mesh + 2 Lead</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🏠</span> Habitat Builder<span class="pda-item-meta">1 Wiring Kit + 1 Battery</span></div>
+        </div>
+      </div>
+      <div class="pda-section" id="tab-map" style="display:none">
+        <h3>Biome Scanner</h3>
+        <div class="pda-list">
+          <div class="pda-item"><span class="pda-item-icon">🟢</span> Safe Shallows<span class="pda-item-meta">0-80m</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🟡</span> Kelp Forest<span class="pda-item-meta">50-170m</span></div>
+          <div class="pda-item"><span class="pda-item-icon">🔴</span> Crash Zone<span class="pda-item-meta">0-400m</span></div>
+          <div class="pda-item"><span class="pda-item-icon">⚫</span> Grassy Plateaus<span class="pda-item-meta">50-170m</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hints -->
+<div id="hints">
+  <span><span class="key-hint">1-5</span> Hotbar</span>
+  <span><span class="key-hint">TAB</span> PDA</span>
+  <span><span class="key-hint">WASD</span> Move cursor</span>
+</div>
+
+<script>
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+let W, H, mx = W/2, my = H/2;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+resize();
+
+/* ---------- World State ---------- */
+let depth = 45;
+let heading = 0;
+let pdaOpen = false;
+let selectedSlot = 1;
+const kelps = [];
+const particles = [];
+const bubbles = [];
+
+/* ---------- Procedural Kelp ---------- */
+for (let i = 0; i < 18; i++) {
+  kelps.push({
+    x: Math.random() * W,
+    y: H + Math.random() * 60,
+    height: 180 + Math.random() * 300,
+    width: 4 + Math.random() * 6,
+    segments: 8 + Math.floor(Math.random() * 6),
+    phase: Math.random() * Math.PI * 2,
+    speed: 0.0005 + Math.random() * 0.001,
+    color: `hsl(${100 + Math.random()*40}, ${50+Math.random()*30}%, ${15+Math.random()*20}%)`
+  });
+}
+kelps.sort((a,b) => a.y - b.y);
+
+/* ---------- Particles ---------- */
+for (let i = 0; i < 120; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-0.5)*0.3, vy: -Math.random()*0.4 - 0.1,
+    r: Math.random()*1.5 + 0.5,
+    a: Math.random()*0.3 + 0.1
+  });
+}
+
+/* ---------- Bubbles ---------- */
+for (let i = 0; i < 30; i++) {
+  bubbles.push({
+    x: Math.random() * W, y: H + Math.random() * 200,
+    r: Math.random()*3 + 1,
+    speed: Math.random()*1 + 0.5,
+    wobble: Math.random()*Math.PI*2
+  });
+}
+
+/* ---------- Drawing ---------- */
+function drawBackground() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0f3a3a');
+  g.addColorStop(0.2, '#0c2e2e');
+  g.addColorStop(0.5, '#061e1e');
+  g.addColorStop(0.8, '#021212');
+  g.addColorStop(1, '#000808');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,W,H);
+}
+
+function drawGodRays(t) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 7; i++) {
+    const x = (i * 0.18 + 0.08) * W + Math.sin(t*0.0002 + i)*40;
+    const w = 60 + i*25;
+    const g = ctx.createLinearGradient(x - w, 0, x + w, H*0.7);
+    g.addColorStop(0, `rgba(180,255,230,${0.04 + Math.sin(t*0.0003+i)*0.02})`);
+    g.addColorStop(1, 'rgba(180,255,230,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(x - w*0.3, 0);
+    ctx.lineTo(x + w*0.3, 0);
+    ctx.lineTo(x + w*1.2, H*0.6);
+    ctx.lineTo(x - w*1.2, H*0.6);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawKelp(t) {
+  kelps.forEach(k => {
+    ctx.strokeStyle = k.color;
+    ctx.lineWidth = k.width;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    const sway = Math.sin(t * k.speed + k.phase) * 20;
+    const sway2 = Math.sin(t * k.speed * 0.7 + k.phase + 1) * 15;
+    ctx.moveTo(k.x, k.y);
+    for (let s = 1; s <= k.segments; s++) {
+      const ratio = s / k.segments;
+      const px = k.x + sway * ratio * ratio + sway2 * ratio;
+      const py = k.y - k.height * ratio;
+      ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // seed clusters at top
+    const topX = k.x + sway + sway2;
+    const topY = k.y - k.height;
+    ctx.fillStyle = '#ffaa33';
+    ctx.shadowColor = '#ffaa33';
+    ctx.shadowBlur = 6;
+    for (let c = 0; c < 3; c++) {
+      const cx = topX + (Math.random()-0.5)*8;
+      const cy = topY + (Math.random()-0.5)*6;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 2.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  });
+}
+
+function drawParticles() {
+  ctx.fillStyle = '#aaddcc';
+  particles.forEach(p => {
+    ctx.globalAlpha = p.a;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function drawBubbles(t) {
+  ctx.strokeStyle = 'rgba(180,240,255,0.35)';
+  ctx.lineWidth = 0.8;
+  bubbles.forEach(b => {
+    const bx = b.x + Math.sin(t*0.002 + b.wobble)*10;
+    const by = b.y;
+    ctx.beginPath();
+    ctx.arc(bx, by, b.r, 0, Math.PI*2);
+    ctx.stroke();
+    // highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.beginPath();
+    ctx.arc(bx - b.r*0.3, by - b.r*0.3, b.r*0.25, 0, Math.PI*2);
+    ctx.fill();
+  });
+}
+
+/* ---------- HUD Updates ---------- */
+function updateCompass() {
+  const wrap = document.getElementById('compass-ticks');
+  if (!wrap.hasChildNodes()) {
+    // build once
+    const degrees = [];
+    for (let d = 0; d < 360; d += 5) {
+      const isMajor = d % 30 === 0;
+      const isCard = d % 90 === 0;
+      const tick = document.createElement('div');
+      tick.className = 'tick' + (isMajor ? ' major' : '');
+      tick.style.left = (d / 360 * 2400) + 'px';
+      tick.style.height = isCard ? '18px' : (isMajor ? '14px' : '8px');
+      tick.style.background = isCard ? 'rgba(255,80,60,0.6)' : undefined;
+      wrap.appendChild(tick);
+      if (isMajor || isCard) {
+        const label = document.createElement('div');
+        label.className = 'tick-label';
+        label.style.left = (d / 360 * 2400) + 'px';
+        label.textContent = isCard ? (d===0?'N':d===90?'E':d===180?'S':'W') : d;
+        wrap.appendChild(label);
+      }
+    }
+    wrap.style.width = '2400px';
+  }
+  heading = (heading + 0.05) % 360;
+  const offset = -(heading / 360 * 2400) + 160;
+  wrap.style.transform = `translateX(${offset}px)`;
+}
+
+function updateDepth() {
+  const targetDepth = Math.floor(10 + (my / H) * 290);
+  depth += (targetDepth - depth) * 0.03;
+  const d = Math.floor(depth);
+  document.getElementById('depth-num').textContent = d;
+  document.getElementById('depth-fill').style.height = Math.min(100, (d / 300) * 100) + '%';
+}
+
+function updateVitals(t) {
+  // gentle fluctuations
+  const o2 = 70 + Math.sin(t*0.0001)*8;
+  const hp = 90 + Math.sin(t*0.00015)*5;
+  const food = 60 + Math.sin(t*0.00008)*10;
+  const water = 50 + Math.sin(t*0.00012)*12;
+  document.getElementById('o2').style.width = o2+'%';
+  document.getElementById('o2-val').textContent = Math.floor(o2);
+  document.getElementById('hp').style.width = hp+'%';
+  document.getElementById('hp-val').textContent = Math.floor(hp);
+  document.getElementById('food').style.width = food+'%';
+  document.getElementById('food-val').textContent = Math.floor(food);
+  document.getElementById('water').style.width = water+'%';
+  document.getElementById('water-val').textContent = Math.floor(water);
+}
+
+function updateTooltip() {
+  const tooltip = document.getElementById('tooltip');
+  const ch = document.getElementById('crosshair');
+  // find kelp near cursor
+  let near = false;
+  kelps.forEach(k => {
+    const topX = k.x + Math.sin(Date.now() * k.speed + k.phase) * 20;
+    const topY = k.y - k.height;
+    const dx = mx - topX;
+    const dy = my - topY;
+    if (Math.sqrt(dx*dx + dy*dy) < 50) near = true;
+  });
+  if (near) {
+    tooltip.classList.add('visible');
+    ch.classList.add('interact');
+    document.getElementById('tooltip-text').textContent = 'Harvest Creepvine Seed Cluster';
+  } else if (mx > W*0.35 && mx < W*0.65 && my > H*0.55 && my < H*0.85) {
+    tooltip.classList.add('visible');
+    ch.classList.add('interact');
+    document.getElementById('tooltip-text').textContent = 'Pick up Acid Mushroom';
+  } else {
+    tooltip.classList.remove('visible');
+    ch.classList.remove('interact');
+  }
+}
+
+function spawnToast(msg, type='') {
+  const container = document.getElementById('notifications');
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (type ? ' '+type : '');
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+}
+
+/* ---------- Input ---------- */
+window.addEventListener('keydown', e => {
+  if (e.key === 'Tab') { e.preventDefault(); togglePDA(); }
+  if (e.key === 'Escape' && pdaOpen) togglePDA();
+  if (!pdaOpen && e.key >= '1' && e.key <= '5') selectSlot(parseInt(e.key));
+});
+
+function togglePDA() {
+  pdaOpen = !pdaOpen;
+  document.getElementById('pda-overlay').classList.toggle('open', pdaOpen);
+}
+
+function selectSlot(n) {
+  selectedSlot = n;
+  document.querySelectorAll('.slot').forEach(s => s.classList.toggle('active', parseInt(s.dataset.slot) === n));
+}
+
+/* PDA tabs */
+document.querySelectorAll('.pda-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pda-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.pda-section').forEach(s => s.style.display = 'none');
+    document.getElementById('tab-'+tab.dataset.tab).style.display = 'block';
+  });
+});
+
+document.getElementById('pda-close').addEventListener('click', togglePDA);
+
+/* ---------- Main Loop ---------- */
+function loop(t) {
+  // update physics
+  particles.forEach(p => {
+    p.x += p.vx + Math.sin(t*0.001 + p.y*0.01)*0.1;
+    p.y += p.vy;
+    if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
+    if (p.x < 0) p.x = W;
+    if (p.x > W) p.x = 0;
+  });
+  bubbles.forEach(b => {
+    b.y -= b.speed;
+    if (b.y < -20) { b.y = H + 50; b.x = Math.random()*W; }
+  });
+
+  // draw world
+  drawBackground();
+  drawGodRays(t);
+  drawKelp(t);
+  drawParticles();
+  drawBubbles(t);
+
+  // update HUD
+  updateCompass();
+  updateDepth();
+  updateVitals(t);
+  updateTooltip();
+
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Initial Toasts ---------- */
+setTimeout(() => spawnToast('Oxygen efficiency decreased'), 1200);
+setTimeout(() => spawnToast('Radiation detected in this region', 'warn'), 3500);
+
+loop(0);
+</script>
+</body>
+</html>
