@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subnautica Design Language — Vision Board</title>
+<title>Subnautica UI — Evidence-Based Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -11,21 +11,14 @@
   :root {
     --abyssal: #010b14;
     --deep: #021a1a;
-    --kelp: #0a3d30;
-    --shallows: #168a6e;
-    --cyan: #00d2ff;
-    --cyan-dim: rgba(0,210,255,0.12);
-    --cyan-mid: rgba(0,210,255,0.35);
-    --cyan-bright: rgba(0,210,255,0.7);
-    --warning: #ffaa33;
-    --danger: #ff4b4b;
-    --alien: #4aff88;
-    --seed: #ffcc44;
     --text-primary: #e0f7ff;
     --text-secondary: rgba(224,247,255,0.55);
     --text-dim: rgba(224,247,255,0.3);
     --glass: rgba(0, 18, 32, 0.55);
     --border: rgba(0, 210, 255, 0.18);
+    --cyan: #00d2ff;
+    --cyan-dim: rgba(0,210,255,0.12);
+    --cyan-mid: rgba(0,210,255,0.35);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -37,8 +30,6 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-
-  /* ---------- Global Overlays ---------- */
   .scanlines {
     position: fixed; inset: 0;
     pointer-events: none; z-index: 9999;
@@ -50,7 +41,7 @@
     pointer-events: none; z-index: 9998;
   }
 
-  /* ---------- Navigation ---------- */
+  /* ---------- Nav ---------- */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     height: 56px;
@@ -58,7 +49,6 @@
     padding: 0 32px;
     z-index: 100;
     background: linear-gradient(to bottom, rgba(1,11,20,0.9), transparent);
-    backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0,210,255,0.08);
   }
   .nav-brand {
@@ -68,9 +58,7 @@
     text-transform: uppercase;
     color: var(--cyan);
   }
-  .nav-links {
-    display: flex; gap: 28px;
-  }
+  .nav-links { display: flex; gap: 28px; }
   .nav-links a {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.6rem;
@@ -94,7 +82,7 @@
   /* ---------- Section Base ---------- */
   section {
     position: relative;
-    padding: 100px 32px;
+    padding: 80px 32px;
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -119,10 +107,19 @@
   .section-desc {
     color: var(--text-secondary);
     font-size: 1.05rem;
-    max-width: 560px;
+    max-width: 700px;
     margin-bottom: 48px;
     font-weight: 300;
   }
+  .evidence-note {
+    background: rgba(0, 60, 80, 0.15);
+    border-left: 3px solid var(--cyan);
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .evidence-note strong { color: var(--cyan); }
 
   /* ---------- Hero ---------- */
   #hero {
@@ -136,13 +133,8 @@
     text-align: center;
     overflow: hidden;
   }
-  #hero-canvas {
-    position: absolute; inset: 0;
-    z-index: 0;
-  }
-  .hero-content {
-    position: relative; z-index: 1;
-  }
+  #hero-canvas { position: absolute; inset: 0; z-index: 0; }
+  .hero-content { position: relative; z-index: 1; }
   .hero-label {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.65rem;
@@ -158,7 +150,6 @@
     font-weight: 700;
     letter-spacing: 8px;
     text-transform: uppercase;
-    color: var(--text-primary);
     text-shadow: 0 0 40px rgba(0,210,255,0.15);
     margin-bottom: 20px;
   }
@@ -167,95 +158,297 @@
     color: var(--text-secondary);
     font-weight: 300;
     letter-spacing: 2px;
-    max-width: 480px;
+    max-width: 520px;
     margin: 0 auto 40px;
   }
-  .hero-scroll {
-    position: absolute;
-    bottom: 40px; left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    animation: breathe 3s ease-in-out infinite;
-  }
-  .hero-scroll-line {
-    width: 1px; height: 32px;
-    background: linear-gradient(to bottom, var(--cyan), transparent);
-    opacity: 0.4;
-  }
-  @keyframes breathe {
-    0%,100% { opacity: 0.3; }
-    50% { opacity: 0.7; }
-  }
 
-  /* ---------- Principles ---------- */
-  .principles-grid {
+  /* ---------- Evidence + Replication Pair ---------- */
+  .study-pair {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+    align-items: start;
   }
-  .principle-card {
+  @media (max-width: 800px) {
+    .study-pair { grid-template-columns: 1fr; }
+  }
+  .study-evidence {
     background: var(--glass);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 28px;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+    padding: 20px;
+    backdrop-filter: blur(6px);
   }
-  .principle-card:hover {
-    border-color: var(--cyan-mid);
-    box-shadow: 0 0 30px rgba(0,210,255,0.06);
-    transform: translateY(-3px);
+  .study-evidence img {
+    width: 100%;
+    border-radius: 4px;
+    display: block;
+    margin-bottom: 14px;
   }
-  .principle-num {
+  .study-evidence .caption {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .study-replication {
+    background: #00080a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+  }
+  .study-replication-label {
+    position: absolute;
+    top: 12px; right: 14px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--cyan);
-    opacity: 0.4;
-    margin-bottom: 12px;
-  }
-  .principle-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.55rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .principle-text {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: var(--text-dim);
   }
 
-  /* ---------- Color Palette ---------- */
+  /* ---------- Circular Meters Replication ---------- */
+  .meters-cluster {
+    position: relative;
+    width: 220px;
+    height: 180px;
+  }
+  .meter-circle {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+  }
+  .meter-o2 {
+    width: 100px; height: 100px;
+    top: 20px; right: 0;
+    border: 2.5px solid #4ade80;
+    box-shadow: 0 0 14px rgba(74,222,128,0.15), inset 0 0 10px rgba(74,222,128,0.05);
+  }
+  .meter-o2 .m-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2px;
+  }
+  .meter-o2 .m-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .meter-small {
+    width: 44px; height: 44px;
+    border: 2px solid;
+  }
+  .meter-health {
+    top: 10px; left: 20px;
+    border-color: #e85d4a;
+    box-shadow: 0 0 8px rgba(232,93,74,0.12);
+  }
+  .meter-food {
+    top: 64px; left: 0;
+    border-color: #d4a017;
+    box-shadow: 0 0 8px rgba(212,160,23,0.12);
+  }
+  .meter-water {
+    bottom: 10px; left: 50px;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 8px rgba(78,205,196,0.12);
+  }
+  .meter-small .m-icon {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  /* ---------- Vehicle Panel Replication ---------- */
+  .vehicle-panel {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+  }
+  .vehicle-main {
+    background: rgba(20, 60, 90, 0.6);
+    border: 1.5px solid rgba(0, 210, 255, 0.35);
+    border-radius: 14px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    backdrop-filter: blur(6px);
+  }
+  .vehicle-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    color: #fff;
+  }
+  .vehicle-row .v-icon { font-size: 1rem; }
+  .vehicle-row .v-val { min-width: 24px; }
+  .vehicle-temp {
+    background: rgba(20, 60, 90, 0.6);
+    border: 1.5px solid rgba(0, 210, 255, 0.35);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 6px 14px;
+    margin-top: -1px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    color: #ffcc66;
+  }
+
+  /* ---------- Compass Replication ---------- */
+  .compass-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .compass-depths {
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
+    margin-bottom: 4px;
+  }
+  .compass-depths .d-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: #fff;
+  }
+  .compass-depths .d-val.warn { color: #ffcc44; }
+  .compass-arc {
+    width: 260px; height: 40px;
+    position: relative;
+  }
+  .compass-arc svg {
+    width: 100%; height: 100%;
+    overflow: visible;
+  }
+  .compass-dirs {
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
+    margin-top: 2px;
+  }
+  .compass-dirs span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+  }
+
+  /* ---------- Crosshair Replication ---------- */
+  .crosshair-repl {
+    width: 24px; height: 24px;
+    position: relative;
+  }
+  .crosshair-repl svg {
+    width: 100%; height: 100%;
+    opacity: 0.6;
+  }
+
+  /* ---------- Hotbar Replication ---------- */
+  .hotbar-repl {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .slot-repl {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,210,255,0.25);
+    background: rgba(0,20,40,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    backdrop-filter: blur(4px);
+  }
+  .slot-repl.empty { opacity: 0.35; border-style: dashed; }
+  .hotbar-prompt {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  /* ---------- Resource Grid Replication ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    gap: 8px;
+  }
+  .res-cell {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    background: rgba(0,20,40,0.5);
+    border: 1px solid rgba(0,210,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 1.2rem;
+  }
+  .res-count {
+    position: absolute;
+    bottom: 2px; right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+  }
+  .res-count.ok { color: #4aff88; }
+  .res-count.missing { color: #ff6666; }
+
+  /* ---------- Subtitle Box (from bz02) ---------- */
+  .subtitle-box {
+    display: inline-block;
+    padding: 14px 28px;
+    background: rgba(0, 35, 55, 0.75);
+    border: 2px solid #00d2ff;
+    border-radius: 24px;
+    backdrop-filter: blur(12px);
+  }
+  .subtitle-speaker {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    color: #ffd700;
+    margin-bottom: 4px;
+  }
+  .subtitle-text {
+    font-size: 0.95rem;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- Palette ---------- */
   .palette-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
   }
   .swatch {
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.06);
-    transition: all 0.25s;
   }
-  .swatch:hover {
-    border-color: var(--cyan-mid);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-  .swatch-color {
-    height: 100px;
-    position: relative;
-  }
+  .swatch-color { height: 80px; position: relative; }
   .swatch-info {
     padding: 14px;
     background: var(--glass);
@@ -263,295 +456,28 @@
   }
   .swatch-name {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     margin-bottom: 4px;
   }
-  .swatch-hex {
+  .swatch-source {
     font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+  }
+  .swatch-note {
     font-size: 0.75rem;
     color: var(--text-secondary);
-  }
-
-  /* ---------- Typography ---------- */
-  .type-showcase {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 40px;
-    backdrop-filter: blur(8px);
-    margin-bottom: 20px;
-  }
-  .type-sample {
-    margin-bottom: 32px;
-  }
-  .type-sample:last-child { margin-bottom: 0; }
-  .type-meta {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-  }
-  .type-display {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-  }
-  .type-body {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 300;
-    max-width: 600px;
-  }
-  .type-mono {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--cyan);
-  }
-
-  /* ---------- Component Studies ---------- */
-  .comp-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-  .comp-card {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    backdrop-filter: blur(8px);
-  }
-  .comp-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 20px;
-  }
-
-  /* Button variants */
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 22px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    background: none;
-    color: var(--text-primary);
-  }
-  .btn-primary {
-    background: rgba(0,210,255,0.1);
-    border: 1px solid var(--cyan-mid);
-    color: var(--cyan);
-  }
-  .btn-primary:hover {
-    background: rgba(0,210,255,0.18);
-    box-shadow: 0 0 16px rgba(0,210,255,0.2);
-    border-color: var(--cyan-bright);
-  }
-  .btn-ghost {
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text-secondary);
-  }
-  .btn-ghost:hover {
-    border-color: var(--cyan-mid);
-    color: var(--cyan);
-  }
-  .btn-danger {
-    background: rgba(255,75,75,0.08);
-    border: 1px solid rgba(255,75,75,0.3);
-    color: var(--danger);
-  }
-  .btn-danger:hover {
-    background: rgba(255,75,75,0.15);
-    box-shadow: 0 0 16px rgba(255,75,75,0.15);
-  }
-
-  /* Progress bars */
-  .bar-demo {
-    margin-bottom: 16px;
-  }
-  .bar-demo:last-child { margin-bottom: 0; }
-  .bar-label-row {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 6px;
-  }
-  .bar-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .bar-value {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--text-secondary);
-  }
-  .bar-track {
-    height: 8px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 1s ease;
-  }
-  .bar-cyan { background: linear-gradient(90deg, #0088aa, var(--cyan)); box-shadow: 0 0 6px rgba(0,210,255,0.25); }
-  .bar-orange { background: linear-gradient(90deg, #cc3300, #ff6633); box-shadow: 0 0 6px rgba(255,102,51,0.2); }
-  .bar-amber { background: linear-gradient(90deg, #cc8800, var(--warning)); }
-
-  /* Panel */
-  .panel-demo {
-    padding: 20px;
-    background: rgba(0,25,40,0.4);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    backdrop-filter: blur(6px);
-  }
-  .panel-demo p {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  /* Notification */
-  .toast-demo {
-    background: rgba(0, 18, 32, 0.7);
-    border: 1px solid rgba(0, 210, 255, 0.2);
-    border-left: 3px solid var(--cyan);
-    border-radius: 4px;
-    padding: 12px 16px;
-    font-size: 0.8rem;
-    backdrop-filter: blur(6px);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .toast-demo.warn { border-left-color: var(--warning); }
-
-  /* Tab strip */
-  .tabs-demo {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid rgba(0,210,255,0.1);
-    margin-bottom: 16px;
-  }
-  .tab-demo {
-    padding: 10px 18px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-  }
-  .tab-demo:hover { color: var(--text-secondary); }
-  .tab-demo.active {
-    color: var(--cyan);
-    border-bottom-color: var(--cyan);
-  }
-
-  /* Input */
-  .input-demo {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    padding: 10px 14px;
-    color: var(--text-primary);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    outline: none;
-    transition: all 0.2s;
-  }
-  .input-demo:focus {
-    border-color: var(--cyan-mid);
-    box-shadow: 0 0 12px rgba(0,210,255,0.08);
-  }
-  .input-demo::placeholder { color: var(--text-dim); }
-
-  /* ---------- Materials ---------- */
-  .mat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .mat-card {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    min-height: 160px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .mat-preview {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-  }
-  .glass-preview {
-    width: 100%; height: 80px;
-    background: rgba(0,25,45,0.4);
-    border: 1px solid rgba(0,210,255,0.2);
-    border-radius: 6px;
-    backdrop-filter: blur(12px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-  .glow-preview {
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--cyan), transparent 70%);
-    opacity: 0.5;
-    animation: glowPulse 3s ease-in-out infinite;
-  }
-  @keyframes glowPulse {
-    0%,100% { opacity: 0.35; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.05); }
-  }
-  .holo-preview {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--cyan);
-    opacity: 0.7;
-    animation: holoFlicker 4s infinite;
-  }
-  @keyframes holoFlicker {
-    0%,92%,96%,100% { opacity: 0.7; }
-    94% { opacity: 0.3; }
+    margin-top: 4px;
+    font-style: italic;
   }
 
   /* ---------- Mood Cards ---------- */
   .mood-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
   }
   .mood-card {
     position: relative;
@@ -559,80 +485,42 @@
     overflow: hidden;
     aspect-ratio: 16/10;
     border: 1px solid rgba(255,255,255,0.06);
-    transition: all 0.3s;
-  }
-  .mood-card:hover {
-    border-color: var(--cyan-mid);
-    box-shadow: 0 0 30px rgba(0,210,255,0.08);
-    transform: translateY(-4px);
   }
   .mood-card img {
     width: 100%; height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
   }
-  .mood-card:hover img { transform: scale(1.04); }
+  .mood-card:hover img { transform: scale(1.03); }
   .mood-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(1,11,20,0.85) 0%, transparent 60%);
+    background: linear-gradient(to top, rgba(1,11,20,0.85) 0%, transparent 55%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 20px;
+    padding: 18px;
   }
   .mood-biome {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.75rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--text-primary);
-    margin-bottom: 4px;
   }
-  .mood-depth {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--cyan);
-    opacity: 0.7;
-  }
-
-  /* ---------- Motion ---------- */
-  .motion-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  .motion-card {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    text-align: center;
-  }
-  .motion-preview {
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-  }
-  .motion-dot {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 10px rgba(0,210,255,0.4);
-  }
-  .motion-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .motion-spec {
+  .mood-source {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.6rem;
-    color: var(--text-dim);
+    color: var(--cyan);
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  /* ---------- Divider ---------- */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,210,255,0.15), transparent);
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   /* ---------- Footer ---------- */
@@ -645,14 +533,6 @@
     font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
   }
-
-  /* ---------- Divider ---------- */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,210,255,0.15), transparent);
-    max-width: 1200px;
-    margin: 0 auto;
-  }
 </style>
 </head>
 <body>
@@ -660,135 +540,264 @@
 <div class="vignette"></div>
 
 <nav>
-  <div class="nav-brand">4546B // Design Language</div>
+  <div class="nav-brand">4546B // UI Evidence</div>
   <div class="nav-links">
-    <a href="#principles">Principles</a>
+    <a href="#survival">Survival</a>
+    <a href="#vehicle">Vehicle</a>
+    <a href="#compass">Compass</a>
+    <a href="#subtitle">Dialogue</a>
     <a href="#palette">Palette</a>
-    <a href="#typography">Type</a>
-    <a href="#components">Components</a>
-    <a href="#materials">Materials</a>
     <a href="#mood">Mood</a>
-    <a href="#motion">Motion</a>
   </div>
 </nav>
 
-<!-- Hero -->
 <section id="hero">
   <canvas id="hero-canvas"></canvas>
   <div class="hero-content">
     <div class="hero-label">Unknown Worlds Entertainment</div>
-    <h1 class="hero-title">Subnautica</h1>
-    <p class="hero-sub">Design Language Vision Board</p>
-  </div>
-  <div class="hero-scroll">
-    <span>Explore</span>
-    <div class="hero-scroll-line"></div>
+    <h1 class="hero-title">Subnautica UI</h1>
+    <p class="hero-sub">Evidence-based reference board. Every component below is derived from actual in-game screenshots.</p>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Principles -->
-<section id="principles">
-  <div class="section-label">01 // Foundation</div>
-  <h2 class="section-title">Design Principles</h2>
-  <p class="section-desc">The core philosophy that governs every UI decision in Subnautica. These principles create tension between beauty and function.</p>
-  <div class="principles-grid">
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">01</div>
-      <div class="principle-title">Diegetic UI</div>
-      <p class="principle-text">The interface should feel like it belongs to the world. HUD elements read as projections on a diving mask or a PDA screen, not arbitrary overlays. Every element reinforces the fiction of survival technology.</p>
+<!-- SURVIVAL METERS -->
+<section id="survival">
+  <div class="section-label">Evidence 01</div>
+  <h2 class="section-title">Survival Meters</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-left crop). Four circular meters arranged in a cluster against the underwater environment. The background is fully transparent—no panel behind them.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_left_meters.png" alt="Bottom-left meters from screenshot">
+      <div class="caption">Original crop — 358×152px from sn07_1131.jpg</div>
     </div>
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">02</div>
-      <div class="principle-title">Survival Clarity</div>
-      <p class="principle-text">Information hierarchy is life-or-death. Oxygen is the most visible element. Colors encode meaning: cyan for system-normal, amber for warning, red for critical. No ambiguity at depth.</p>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="meters-cluster">
+          <div class="meter-circle meter-o2">
+            <span class="m-label">O<sub>2</sub></span>
+            <span class="m-val">225</span>
+          </div>
+          <div class="meter-circle meter-small meter-health">
+            <span class="m-icon" style="color:#e85d4a;">+</span>
+          </div>
+          <div class="meter-circle meter-small meter-food">
+            <span class="m-icon" style="color:#d4a017;">🍖</span>
+          </div>
+          <div class="meter-circle meter-small meter-water">
+            <span class="m-icon" style="color:#4ecdc4;">💧</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">03</div>
-      <div class="principle-title">Holographic Materiality</div>
-      <p class="principle-text">UI surfaces are translucent, glass-like, with subtle scan lines and chromatic edges. They float rather than sit heavy on screen. Glow replaces solid fills. Light bleeds at borders.</p>
-    </div>
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">04</div>
-      <div class="principle-title">Biome as Canvas</div>
-      <p class="principle-text">The underwater world is never obscured. UI panels are semi-transparent and desaturated so the environment remains the star. The interface adapts to light levels, never fighting the scene.</p>
-    </div>
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">05</div>
-      <div class="principle-title">Precursor Mystery</div>
-      <p class="principle-text">Alien technology introduces a second visual language: hard-edged geometry, etched glyphs, and an unsettling green glow. It contrasts with the organic softness of ocean life and the utilitarian human tech.</p>
-    </div>
-    <div class="principle-card gs-reveal">
-      <div class="principle-num">06</div>
-      <div class="principle-title">Restrained Motion</div>
-      <p class="principle-text">Animation is purposeful, never decorative. Bars deplete smoothly. Notifications slide in with weight. Critical states pulse slowly. Fast or jittery movement breaks the meditative underwater pacing.</p>
-    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Large O<sub>2</sub> circle (~2.5× size of small circles) with bright green/aqua border. Three smaller circles clustered to the left: red (health), yellow/gold (food), blue (water) with white drop icon. All have dark translucent fills. No rectangular panel behind the cluster. Text is white, sans-serif, centered. Numbers appear below the label.
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- Color Palette -->
+<!-- VEHICLE PANEL -->
+<section id="vehicle">
+  <div class="section-label">Evidence 02</div>
+  <h2 class="section-title">Vehicle Status Panel</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-right crop). A stepped/rounded blue panel with wrench, lightning bolt, and thermometer icons. No hard corners—all curves.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_right_vehicle.png" alt="Vehicle panel from screenshot">
+      <div class="caption">Original crop — 410×152px from sn07_1131.jpg</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="vehicle-panel">
+          <div class="vehicle-main">
+            <div class="vehicle-row"><span class="v-icon">🔧</span><span class="v-val">63</span></div>
+            <div class="vehicle-row"><span class="v-icon" style="color:#ffcc44;">⚡</span><span class="v-val">89</span></div>
+          </div>
+          <div class="vehicle-temp">
+            <span style="font-size:0.9rem;">🌡️</span>
+            <span>14 °C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Medium-dark blue translucent background with lighter cyan border. Main rounded body contains two readouts side by side. A smaller, narrower rounded section sits below and slightly indented on the left, creating a stepped silhouette. Temperature text is yellow/gold. Wrench and numbers are white. Lightning bolt and its number appear yellow-tinged.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPASS -->
+<section id="compass">
+  <div class="section-label">Evidence 03</div>
+  <h2 class="section-title">Depth &amp; Compass</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (top-center crop). Curved compass strip with depth numbers above and cardinal directions below.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/top_center_depth.png" alt="Compass from screenshot">
+      <div class="caption">Original crop — 409×108px from sn07_1131.jpg</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="compass-wrap">
+          <div class="compass-depths">
+            <span class="d-val">270 m</span>
+            <span class="d-val warn">300</span>
+          </div>
+          <div class="compass-arc">
+            <svg viewBox="0 0 260 40" preserveAspectRatio="none">
+              <path d="M 0 35 Q 130 -5 260 35" fill="none" stroke="rgba(0,210,255,0.35)" stroke-width="2"/>
+              <line x1="20" y1="32" x2="20" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <line x1="60" y1="30" x2="60" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="100" y1="24" x2="100" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="140" y1="20" x2="140" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="180" y1="24" x2="180" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="220" y1="30" x2="220" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="240" y1="32" x2="240" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <polygon points="130,38 126,45 134,45" fill="#ffcc44"/>
+            </svg>
+          </div>
+          <div class="compass-dirs">
+            <span>SW</span>
+            <span>W</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Two numbers at top: "270m" in white, "300" in yellow/amber. Beneath them, a single cyan curved arc connecting the two values. Small tick marks below the arc suggest a compass ribbon. "SW" and "W" labels below ticks. Yellow downward-pointing triangle at center indicates heading. Dark shapes on edges suggest helmet/visor framing.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DIALOGUE BOX -->
+<section id="subtitle">
+  <div class="section-label">Evidence 04</div>
+  <h2 class="section-title">Dialogue Subtitle Box</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>below-zero/bz02_6995.jpg</code>. A wide rounded rectangle with bright cyan border, floating above the bottom of the screen. Speaker name in yellow, dialogue in white.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="../../below-zero/bz02_6995.jpg" alt="Subtitle box from Below Zero" style="max-height:280px; object-fit:cover; object-position:center 70%;">
+      <div class="caption">Original screenshot — bz02_6995.jpg (cropped to show subtitle)</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="subtitle-box">
+          <div class="subtitle-speaker">Al-An:</div>
+          <div class="subtitle-text">You are... different. I will observe.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Pill-shaped container with large border-radius (~25px). Border is solid bright cyan (#00ffff). Background is dark teal with strong transparency. Speaker name is bright yellow/gold. Body text is plain white. Box floats above bottom edge with generous padding. No visible panel behind it extending to screen edges.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PALETTE -->
 <section id="palette">
-  <div class="section-label">02 // Color</div>
-  <h2 class="section-title">Palette</h2>
-  <p class="section-desc">Colors drawn from the ocean itself. The palette moves from abyssal depths through bioluminescent life to warning signals.</p>
+  <div class="section-label">Extracted Colors</div>
+  <h2 class="section-title">Palette from UI Evidence</h2>
+  <p class="section-desc">Approximated hex values sampled from the UI elements in <code>sn07_1131.jpg</code> and <code>bz02_6995.jpg</code>. These are visual approximations, not exact code values from the game engine.</p>
   <div class="palette-grid">
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#010b14;"></div>
+      <div class="swatch-color" style="background:#4ade80;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Abyssal Black</div>
-        <div class="swatch-hex">#010B14</div>
+        <div class="swatch-name">O2 Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Bright green/aqua circle border</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#0a3d30;"></div>
+      <div class="swatch-color" style="background:#e85d4a;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Kelp Forest</div>
-        <div class="swatch-hex">#0A3D30</div>
+        <div class="swatch-name">Health Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Red/orange small circle border</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#168a6e;"></div>
+      <div class="swatch-color" style="background:#d4a017;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Shallows Teal</div>
-        <div class="swatch-hex">#168A6E</div>
+        <div class="swatch-name">Food Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Yellow/gold small circle border</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#00d2ff; box-shadow:inset 0 0 20px rgba(0,0,0,0.2);"></div>
+      <div class="swatch-color" style="background:#4ecdc4;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Bioluminescent Cyan</div>
-        <div class="swatch-hex">#00D2FF</div>
+        <div class="swatch-name">Water Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Cyan/teal small circle border</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#ffaa33;"></div>
+      <div class="swatch-color" style="background:#1a4a6a;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Warning Amber</div>
-        <div class="swatch-hex">#FFAA33</div>
+        <div class="swatch-name">Vehicle Panel</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Medium-dark blue translucent fill</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#ff4b4b;"></div>
+      <div class="swatch-color" style="background:#4dd0e1;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Danger Coral</div>
-        <div class="swatch-hex">#FF4B4B</div>
-      </div>
-    </div>
-    <div class="swatch gs-reveal">
-      <div class="swatch-color" style="background:#4aff88;"></div>
-      <div class="swatch-info">
-        <div class="swatch-name">Alien Green</div>
-        <div class="swatch-hex">#4AFF88</div>
+        <div class="swatch-name">Panel Border</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Lighter cyan outline on vehicle HUD</div>
       </div>
     </div>
     <div class="swatch gs-reveal">
       <div class="swatch-color" style="background:#ffcc44;"></div>
       <div class="swatch-info">
-        <div class="swatch-name">Seed Cluster</div>
-        <div class="swatch-hex">#FFCC44</div>
+        <div class="swatch-name">Warning / Temp</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Yellow for power and temperature values</div>
+      </div>
+    </div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#00d2ff; box-shadow:inset 0 0 20px rgba(0,0,0,0.3);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Subtitle Border</div>
+        <div class="swatch-source">bz02 bottom-center</div>
+        <div class="swatch-note">Bright cyan dialogue box outline</div>
+      </div>
+    </div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#ffd700;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Speaker Name</div>
+        <div class="swatch-source">bz02 bottom-center</div>
+        <div class="swatch-note">Yellow/gold for speaker label</div>
+      </div>
+    </div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#ffffff;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">UI Text</div>
+        <div class="swatch-source">sn07 / bz02</div>
+        <div class="swatch-note">Pure white for numbers and labels</div>
       </div>
     </div>
   </div>
@@ -796,257 +805,63 @@
 
 <div class="divider"></div>
 
-<!-- Typography -->
-<section id="typography">
-  <div class="section-label">03 // Typography</div>
-  <h2 class="section-title">Type System</h2>
-  <p class="section-desc">Three voices: the authoritative display face for headlines, the utilitarian body face for readability, and the technical mono for data readouts.</p>
-  <div class="type-showcase gs-reveal">
-    <div class="type-sample">
-      <div class="type-meta">Orbitron // Display // 700 // Tracking +4px</div>
-      <div class="type-display">Planet 4546B</div>
-    </div>
-    <div class="type-sample">
-      <div class="type-meta">Rajdhani // Body // 300 // Tracking +0.5px</div>
-      <div class="type-body">The ocean is unforgiving. Every system must be legible at a glance through water distortion and low light. Body text stays light in weight to avoid competing with the environment.</div>
-    </div>
-    <div class="type-sample">
-      <div class="type-meta">Share Tech Mono // Data // 400 // Tracking +1px</div>
-      <div class="type-mono">DEPTH: 045m // O2: 78% // TEMP: 14.2&deg;C</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Components -->
-<section id="components">
-  <div class="section-label">04 // Components</div>
-  <h2 class="section-title">UI Component Studies</h2>
-  <p class="section-desc">Isolated explorations of individual interface elements. Each is designed to work against the underwater environment without obscuring it.</p>
-  <div class="comp-grid">
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Buttons</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-primary">Primary</button>
-        <button class="btn btn-ghost">Ghost</button>
-        <button class="btn btn-danger">Danger</button>
-      </div>
-    </div>
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Progress Bars</div>
-      <div class="bar-demo">
-        <div class="bar-label-row"><span class="bar-label">Oxygen</span><span class="bar-value">78%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-cyan" style="width:78%"></div></div>
-      </div>
-      <div class="bar-demo">
-        <div class="bar-label-row"><span class="bar-label">Health</span><span class="bar-value">45%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-orange" style="width:45%"></div></div>
-      </div>
-      <div class="bar-demo">
-        <div class="bar-label-row"><span class="bar-label">Food</span><span class="bar-value">32%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-amber" style="width:32%"></div></div>
-      </div>
-    </div>
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Panel</div>
-      <div class="panel-demo">
-        <p>Survival signs stabilizing. Environmental readings within normal parameters. Continue resource gathering.</p>
-      </div>
-    </div>
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Notification</div>
-      <div class="toast-demo">New data entry received</div>
-      <div style="height:10px;"></div>
-      <div class="toast-demo warn">Oxygen efficiency decreased</div>
-    </div>
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Tabs</div>
-      <div class="tabs-demo">
-        <div class="tab-demo active">Data</div>
-        <div class="tab-demo">Inventory</div>
-        <div class="tab-demo">Blueprints</div>
-      </div>
-      <div class="panel-demo">
-        <p style="font-size:0.8rem;">Tab content area with glass backing and subtle border.</p>
-      </div>
-    </div>
-    <div class="comp-card gs-reveal">
-      <div class="comp-label">Input Field</div>
-      <input class="input-demo" type="text" placeholder="Enter coordinates..." value="-145.2, 32.1, 890.0">
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Materials -->
-<section id="materials">
-  <div class="section-label">05 // Materials</div>
-  <h2 class="section-title">Surface & Effects</h2>
-  <p class="section-desc">The physical qualities of UI surfaces. Glass, glow, and holographic instability create the feeling of a heads-up display projected onto a visor.</p>
-  <div class="mat-grid">
-    <div class="mat-card gs-reveal">
-      <div class="mat-preview"><div class="glass-preview">Glass Panel</div></div>
-      <div class="comp-label">Glassmorphism</div>
-      <p class="principle-text">Dark translucent base with backdrop blur. Thin cyan border at low opacity. Contents remain readable while the world bleeds through.</p>
-    </div>
-    <div class="mat-card gs-reveal">
-      <div class="mat-preview"><div class="glow-preview"></div></div>
-      <div class="comp-label">Ambient Glow</div>
-      <p class="principle-text">Soft radial gradients behind key elements. Not a hard drop shadow — a diffuse bloom that suggests underwater light scattering.</p>
-    </div>
-    <div class="mat-card gs-reveal">
-      <div class="mat-preview"><div class="holo-preview">HOLOGRAM</div></div>
-      <div class="comp-label">Holographic Flicker</div>
-      <p class="principle-text">Occasional opacity dips simulate an imperfect projection system. Timing is irregular — 4-6 second intervals with brief micro-flickers.</p>
-    </div>
-    <div class="mat-card gs-reveal">
-      <div class="mat-preview" style="flex-direction:column;gap:8px;">
-        <div style="width:100%;height:1px;background:rgba(0,210,255,0.15);"></div>
-        <div style="width:100%;height:1px;background:rgba(0,210,255,0.15);"></div>
-        <div style="width:100%;height:1px;background:rgba(0,210,255,0.15);"></div>
-        <div style="width:100%;height:1px;background:rgba(0,210,255,0.15);"></div>
-        <div style="width:100%;height:1px;background:rgba(0,210,255,0.15);"></div>
-      </div>
-      <div class="comp-label">Scan Lines</div>
-      <p class="principle-text">Horizontal lines at 3px intervals with extremely low opacity (0.015). Creates texture without noise. Applied globally as a fixed overlay.</p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Mood Cards -->
+<!-- MOOD -->
 <section id="mood">
-  <div class="section-label">06 // Environment</div>
-  <h2 class="section-title">Biome Mood Studies</h2>
-  <p class="section-desc">Reference imagery from Planet 4546B. Each biome informs a distinct palette and atmosphere that the UI must accommodate.</p>
+  <div class="section-label">Environment Reference</div>
+  <h2 class="section-title">Biome Mood</h2>
+  <p class="section-desc">Actual in-game screenshots from this repository, used to understand what the UI must read against.</p>
   <div class="mood-grid">
     <div class="mood-card gs-reveal">
       <img src="../../subnautica/sn01_9354.jpg" alt="Kelp Forest" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Kelp Forest</div>
-        <div class="mood-depth">50m — 170m</div>
+        <div class="mood-source">sn01_9354.jpg</div>
       </div>
     </div>
     <div class="mood-card gs-reveal">
       <img src="../../subnautica/sn02_1778.jpg" alt="Safe Shallows" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Safe Shallows</div>
-        <div class="mood-depth">0m — 80m</div>
+        <div class="mood-source">sn02_1778.jpg</div>
       </div>
     </div>
     <div class="mood-card gs-reveal">
       <img src="../../subnautica/sn06_2189.jpg" alt="Mountain Island" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Mountain Island</div>
-        <div class="mood-depth">Above Sea Level</div>
+        <div class="mood-source">sn06_2189.jpg</div>
       </div>
     </div>
     <div class="mood-card gs-reveal">
       <img src="../../subnautica/sn03_4271.jpg" alt="Crash Zone" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Crash Zone</div>
-        <div class="mood-depth">0m — 400m</div>
+        <div class="mood-source">sn03_4271.jpg</div>
       </div>
     </div>
     <div class="mood-card gs-reveal">
-      <img src="../../subnautica/sn08_1158.jpg" alt="Night Scene" loading="lazy">
+      <img src="../../subnautica/sn08_1158.jpg" alt="Night" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Bioluminescent Night</div>
-        <div class="mood-depth">Deep Ocean</div>
-      </div>
-    </div>
-    <div class="mood-card gs-reveal">
-      <img src="../../below-zero/bz02_6995.jpg" alt="Al-An" loading="lazy">
-      <div class="mood-overlay">
-        <div class="mood-biome">Architect Facility</div>
-        <div class="mood-depth">Precursor Structure</div>
+        <div class="mood-source">sn08_1158.jpg</div>
       </div>
     </div>
     <div class="mood-card gs-reveal">
       <img src="../../below-zero/bz03_9536.jpg" alt="Frozen Leviathan" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Frozen Leviathan</div>
-        <div class="mood-depth">Below Zero</div>
+        <div class="mood-source">bz03_9536.jpg</div>
       </div>
-    </div>
-    <div class="mood-card gs-reveal">
-      <img src="../../below-zero/bz04_3004.jpg" alt="Glow Whale" loading="lazy">
-      <div class="mood-overlay">
-        <div class="mood-biome">Glow Whale</div>
-        <div class="mood-depth">Arctic Depths</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Motion -->
-<section id="motion">
-  <div class="section-label">07 // Motion</div>
-  <h2 class="section-title">Animation Language</h2>
-  <p class="section-desc">Timing and easing definitions for the interface. Underwater pacing means slow, fluid motion. Nothing snaps unless it is a warning.</p>
-  <div class="motion-grid">
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-ease"></div>
-      </div>
-      <div class="motion-name">Standard Ease</div>
-      <div class="motion-spec">0.4s // power2.out</div>
-      <p class="principle-text" style="margin-top:8px;">Default for hover states, panel transitions, and tab switches.</p>
-    </div>
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-slow"></div>
-      </div>
-      <div class="motion-name">Ambient Drift</div>
-      <div class="motion-spec">3s // sine.inOut</div>
-      <p class="principle-text" style="margin-top:8px;">Background elements, god rays, and particle motion. Imperceptibly slow.</p>
-    </div>
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-enter"></div>
-      </div>
-      <div class="motion-name">Panel Entrance</div>
-      <div class="motion-spec">0.5s // power3.out</div>
-      <p class="principle-text" style="margin-top:8px;">Menus and notifications slide in with weight, then settle softly.</p>
-    </div>
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-pulse"></div>
-      </div>
-      <div class="motion-name">Critical Pulse</div>
-      <div class="motion-spec">1.5s // sine.inOut // repeat</div>
-      <p class="principle-text" style="margin-top:8px;">Low oxygen, health warnings. Slow, insistent rhythm. Never frantic.</p>
-    </div>
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-snap"></div>
-      </div>
-      <div class="motion-name">Emergency Snap</div>
-      <div class="motion-spec">0.15s // power1.out</div>
-      <p class="principle-text" style="margin-top:8px;">Rare. Used only for damage indicators and sudden system failures.</p>
-    </div>
-    <div class="motion-card gs-reveal">
-      <div class="motion-preview">
-        <div class="motion-dot" id="motion-flicker"></div>
-      </div>
-      <div class="motion-name">Hologram Flicker</div>
-      <div class="motion-spec">Random // 4-6s intervals</div>
-      <p class="principle-text" style="margin-top:8px;">Irregular opacity dips to simulate an imperfect projection system.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  Planet 4546B // Design Language Study // Iteration 03
+  Evidence-based reference // Iteration 03 // Verified against repository screenshots
 </footer>
 
 <script>
-/* ---------- Hero Canvas: Atmospheric Depth ---------- */
+/* ---------- Hero Canvas ---------- */
 const c = document.getElementById('hero-canvas');
 const x = c.getContext('2d');
 let W, H;
@@ -1058,17 +873,16 @@ window.addEventListener('resize', resize);
 resize();
 
 const particles = [];
-for (let i = 0; i < 80; i++) {
+for (let i = 0; i < 60; i++) {
   particles.push({
     x: Math.random() * W, y: Math.random() * H,
-    vx: (Math.random()-0.5)*0.2, vy: -Math.random()*0.25 - 0.05,
-    r: Math.random()*1.2 + 0.3,
-    a: Math.random()*0.15 + 0.05
+    vx: (Math.random()-0.5)*0.15, vy: -Math.random()*0.2 - 0.03,
+    r: Math.random()*1 + 0.3,
+    a: Math.random()*0.12 + 0.04
   });
 }
 
 function drawHero(t) {
-  // Deep gradient
   const g = x.createLinearGradient(0, 0, 0, H);
   g.addColorStop(0, '#0a2a2a');
   g.addColorStop(0.4, '#061e1e');
@@ -1077,30 +891,28 @@ function drawHero(t) {
   x.fillStyle = g;
   x.fillRect(0,0,W,H);
 
-  // Soft god rays (very subtle)
   x.save();
   x.globalCompositeOperation = 'screen';
-  for (let i = 0; i < 5; i++) {
-    const cx = (i * 0.25 + 0.1) * W + Math.sin(t*0.0001 + i)*30;
-    const w = 80 + i*20;
-    const gr = x.createLinearGradient(cx-w, 0, cx+w, H*0.5);
-    gr.addColorStop(0, `rgba(160,240,220,${0.025 + Math.sin(t*0.0002+i)*0.01})`);
+  for (let i = 0; i < 4; i++) {
+    const cx = (i * 0.25 + 0.1) * W + Math.sin(t*0.0001 + i)*20;
+    const w = 60 + i*18;
+    const gr = x.createLinearGradient(cx-w, 0, cx+w, H*0.45);
+    gr.addColorStop(0, `rgba(160,240,220,${0.02 + Math.sin(t*0.0002+i)*0.008})`);
     gr.addColorStop(1, 'rgba(160,240,220,0)');
     x.fillStyle = gr;
     x.beginPath();
     x.moveTo(cx-w*0.2, 0);
     x.lineTo(cx+w*0.2, 0);
-    x.lineTo(cx+w, H*0.45);
-    x.lineTo(cx-w, H*0.45);
+    x.lineTo(cx+w, H*0.4);
+    x.lineTo(cx-w, H*0.4);
     x.closePath();
     x.fill();
   }
   x.restore();
 
-  // Drift particles
   x.fillStyle = '#aaddcc';
   particles.forEach(p => {
-    p.x += p.vx + Math.sin(t*0.0005 + p.y*0.005)*0.08;
+    p.x += p.vx + Math.sin(t*0.0004 + p.y*0.005)*0.05;
     p.y += p.vy;
     if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
     x.globalAlpha = p.a;
@@ -1114,78 +926,30 @@ function drawHero(t) {
 }
 drawHero(0);
 
-/* ---------- GSAP Animations ---------- */
+/* ---------- GSAP Scroll Reveals ---------- */
 gsap.registerPlugin(ScrollTrigger);
 
-// Reveal cards on scroll
-gsap.utils.toArray('.gs-reveal').forEach((el, i) => {
+gsap.utils.toArray('.gs-reveal').forEach((el) => {
   gsap.from(el, {
-    y: 30,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: el,
-      start: 'top 85%',
-      toggleActions: 'play none none none'
-    }
-  });
-});
-
-// Section titles
-gsap.utils.toArray('.section-title').forEach(el => {
-  gsap.from(el, {
-    y: 20,
+    y: 24,
     opacity: 0,
     duration: 0.5,
     ease: 'power2.out',
     scrollTrigger: {
       trigger: el,
-      start: 'top 80%'
+      start: 'top 88%',
+      toggleActions: 'play none none none'
     }
   });
 });
 
-// Hero entrance
 gsap.from('.hero-content > *', {
-  y: 40,
+  y: 30,
   opacity: 0,
-  duration: 1,
-  stagger: 0.2,
+  duration: 0.9,
+  stagger: 0.18,
   ease: 'power3.out',
   delay: 0.3
-});
-
-// Motion demos
-gsap.to('#motion-ease', {
-  x: 40, duration: 0.8, ease: 'power2.out',
-  repeat: -1, yoyo: true, repeatDelay: 0.5
-});
-gsap.to('#motion-slow', {
-  x: 30, duration: 3, ease: 'sine.inOut',
-  repeat: -1, yoyo: true
-});
-gsap.from('#motion-enter', {
-  x: -40, opacity: 0, duration: 0.5, ease: 'power3.out',
-  repeat: -1, repeatDelay: 1.5
-});
-gsap.to('#motion-pulse', {
-  scale: 1.4, opacity: 0.5, duration: 1.5, ease: 'sine.inOut',
-  repeat: -1, yoyo: true
-});
-gsap.to('#motion-snap', {
-  x: 40, duration: 0.15, ease: 'power1.out',
-  repeat: -1, yoyo: true, repeatDelay: 1
-});
-gsap.to('#motion-flicker', {
-  opacity: 0.2, duration: 0.1, ease: 'none',
-  repeat: -1, repeatDelay: 3.5, yoyo: true
-});
-
-// Hero scroll indicator
-gsap.to('.hero-scroll', {
-  y: 8, duration: 2, ease: 'sine.inOut',
-  repeat: -1, yoyo: true
 });
 </script>
 </body>
