@@ -214,24 +214,24 @@
   /* ---------- Circular Meters Replication ---------- */
   .meters-cluster {
     position: relative;
-    width: 220px;
-    height: 180px;
+    width: 180px;
+    height: 150px;
   }
   .meter-circle {
     position: absolute;
     border-radius: 50%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     backdrop-filter: blur(4px);
   }
   .meter-o2 {
-    width: 100px; height: 100px;
-    top: 20px; right: 0;
+    width: 92px; height: 92px;
+    top: 0; right: 0;
     border: 2.5px solid #4ade80;
     box-shadow: 0 0 14px rgba(74,222,128,0.15), inset 0 0 10px rgba(74,222,128,0.05);
+    flex-direction: column;
   }
   .meter-o2 .m-label {
     font-family: 'Orbitron', sans-serif;
@@ -247,26 +247,59 @@
     color: #fff;
   }
   .meter-small {
-    width: 44px; height: 44px;
+    width: 38px; height: 38px;
     border: 2px solid;
+    overflow: hidden;
   }
   .meter-health {
-    top: 10px; left: 20px;
+    top: 8px; left: 0;
     border-color: #e85d4a;
     box-shadow: 0 0 8px rgba(232,93,74,0.12);
   }
+  .meter-health .eye-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,0.85);
+    background: rgba(180,40,30,0.5);
+    position: relative;
+  }
+  .meter-health .eye-icon::after {
+    content: ''; position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(100,20,20,0.8);
+  }
   .meter-food {
-    top: 64px; left: 0;
+    top: 54px; left: 18px;
     border-color: #d4a017;
     box-shadow: 0 0 8px rgba(212,160,23,0.12);
   }
+  .meter-food .gauge-icon {
+    width: 100%; height: 100%;
+    position: relative;
+    border-radius: 50%;
+  }
+  .meter-food .gauge-icon::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(rgba(255,255,255,0.7) 0deg, rgba(255,255,255,0.7) 90deg, transparent 90deg);
+    opacity: 0.8;
+  }
   .meter-water {
-    bottom: 10px; left: 50px;
+    bottom: 0; left: 56px;
     border-color: #4ecdc4;
     box-shadow: 0 0 8px rgba(78,205,196,0.12);
   }
-  .meter-small .m-icon {
-    font-size: 1rem;
+  .meter-water .drop-icon {
+    width: 14px; height: 18px;
+    background: #4ecdc4;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform: rotate(-45deg);
     opacity: 0.85;
   }
 
@@ -280,12 +313,14 @@
   .vehicle-main {
     background: rgba(20, 60, 90, 0.6);
     border: 1.5px solid rgba(0, 210, 255, 0.35);
-    border-radius: 14px;
+    border-radius: 0 14px 14px 0;
     padding: 10px 18px;
     display: flex;
     align-items: center;
     gap: 18px;
     backdrop-filter: blur(6px);
+    position: relative;
+    clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%);
   }
   .vehicle-row {
     display: flex;
@@ -304,7 +339,8 @@
     border-radius: 0 0 12px 12px;
     padding: 6px 14px;
     margin-top: -1px;
-    margin-right: 10px;
+    margin-right: 0;
+    margin-left: 24px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -324,11 +360,17 @@
     justify-content: space-between;
     width: 260px;
     margin-bottom: 4px;
+    align-items: baseline;
   }
   .compass-depths .d-val {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.85rem;
     color: #fff;
+  }
+  .compass-depths .d-val .unit {
+    font-size: 0.55rem;
+    margin-left: 2px;
+    opacity: 0.7;
   }
   .compass-depths .d-val.warn { color: #ffcc44; }
   .compass-arc {
@@ -348,8 +390,9 @@
   .compass-dirs span {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.6rem;
-    color: rgba(255,255,255,0.5);
+    color: #ffcc44;
     letter-spacing: 2px;
+    opacity: 0.8;
   }
 
   /* ---------- Crosshair Replication ---------- */
@@ -583,20 +626,20 @@
             <span class="m-val">225</span>
           </div>
           <div class="meter-circle meter-small meter-health">
-            <span class="m-icon" style="color:#e85d4a;">+</span>
+            <div class="eye-icon"></div>
           </div>
           <div class="meter-circle meter-small meter-food">
-            <span class="m-icon" style="color:#d4a017;">🍖</span>
+            <div class="gauge-icon"></div>
           </div>
           <div class="meter-circle meter-small meter-water">
-            <span class="m-icon" style="color:#4ecdc4;">💧</span>
+            <div class="drop-icon"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
-    <strong>Observed:</strong> Large O<sub>2</sub> circle (~2.5× size of small circles) with bright green/aqua border. Three smaller circles clustered to the left: red (health), yellow/gold (food), blue (water) with white drop icon. All have dark translucent fills. No rectangular panel behind the cluster. Text is white, sans-serif, centered. Numbers appear below the label.
+    <strong>Observed:</strong> Large O<sub>2</sub> circle (~2.4× diameter of small circles) with bright green/aqua border, white "O<sub>2</sub>" and "225" inside. Three smaller circles arranged diagonally to the left: red-bordered circle contains a white ring with dark center (eye/donut shape); yellow-bordered circle contains a white arc segment on dark fill (gauge); blue-bordered circle contains a light blue teardrop. All have dark translucent fills. No rectangular panel behind the cluster. Text is white, sans-serif, centered.
   </div>
 </section>
 
@@ -631,7 +674,7 @@
     </div>
   </div>
   <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
-    <strong>Observed:</strong> Medium-dark blue translucent background with lighter cyan border. Main rounded body contains two readouts side by side. A smaller, narrower rounded section sits below and slightly indented on the left, creating a stepped silhouette. Temperature text is yellow/gold. Wrench and numbers are white. Lightning bolt and its number appear yellow-tinged.
+    <strong>Observed:</strong> Medium-dark blue translucent background with lighter cyan border. Left end tapers to a rounded point (bullet shape). Main body contains two readouts side by side. A smaller rounded section sits below, indented from the left and aligned to the right half of the main body. Temperature text is yellow/gold. Wrench and numbers are white. Lightning bolt and its number appear yellow-tinged.
   </div>
 </section>
 
@@ -654,15 +697,18 @@
       <div style="display:flex;align-items:center;justify-content:center;height:100%;">
         <div class="compass-wrap">
           <div class="compass-depths">
-            <span class="d-val">270 m</span>
+            <span class="d-val">270<span class="unit">m</span></span>
             <span class="d-val warn">300</span>
           </div>
           <div class="compass-arc">
             <svg viewBox="0 0 260 40" preserveAspectRatio="none">
-              <path d="M 0 35 Q 130 -5 260 35" fill="none" stroke="rgba(0,210,255,0.35)" stroke-width="2"/>
+              <!-- left half cyan -->
+              <path d="M 0 35 Q 65 5 130 12" fill="none" stroke="rgba(0,210,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- right half yellow -->
+              <path d="M 130 12 Q 195 5 260 35" fill="none" stroke="rgba(255,204,68,0.45)" stroke-width="2.5" stroke-linecap="round"/>
               <line x1="20" y1="32" x2="20" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-              <line x1="60" y1="30" x2="60" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
-              <line x1="100" y1="24" x2="100" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="60" y1="28" x2="60" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="100" y1="22" x2="100" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
               <line x1="140" y1="20" x2="140" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
               <line x1="180" y1="24" x2="180" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
               <line x1="220" y1="30" x2="220" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
@@ -679,7 +725,7 @@
     </div>
   </div>
   <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
-    <strong>Observed:</strong> Two numbers at top: "270m" in white, "300" in yellow/amber. Beneath them, a single cyan curved arc connecting the two values. Small tick marks below the arc suggest a compass ribbon. "SW" and "W" labels below ticks. Yellow downward-pointing triangle at center indicates heading. Dark shapes on edges suggest helmet/visor framing.
+    <strong>Observed:</strong> Two numbers at top: "270" in white with smaller "m" suffix, "300" in yellow/amber. Beneath them, a curved arc split into two colors: left half cyan, right half yellow. Small tick marks below the arc. "SW" and "W" labels below ticks in yellow/gold. Yellow downward-pointing triangle at center indicates heading. Dark shapes on edges suggest helmet/visor framing.
   </div>
 </section>
 
