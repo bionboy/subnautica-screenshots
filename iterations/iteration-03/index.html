@@ -314,50 +314,64 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: 10px;
+    position: relative;
   }
-  .vehicle-tab {
+  /* Top panel: pointed tab left, rounded right */
+  .vehicle-tab-main {
     display: flex;
     align-items: center;
     position: relative;
     color: #fff;
     font-family: 'Orbitron', sans-serif;
-    padding: 10px 18px 10px 14px;
-    gap: 12px;
+    padding: 8px 16px 8px 20px;
+    gap: 10px;
     font-size: 0.75rem;
-    background: rgba(20, 60, 90, 0.65);
-    border: 1.5px solid rgba(0, 210, 255, 0.35);
+    background: rgba(21, 75, 102, 0.65);
+    border: 1.5px solid rgba(123, 199, 191, 0.5);
     backdrop-filter: blur(6px);
-    border-radius: 0 14px 14px 0;
+    border-radius: 0 12px 12px 0;
+    clip-path: polygon(
+      0 50%,
+      12px 0,
+      100% 0,
+      100% 100%,
+      12px 100%
+    );
   }
-  .vehicle-tab::before {
+  /* Bottom panel: small rounded capsule, no point */
+  .vehicle-tab-temp {
+    display: flex;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+    padding: 3px 10px 3px 10px;
+    gap: 5px;
+    font-size: 0.6rem;
+    color: #ffcc44;
+    background: rgba(15, 48, 64, 0.65);
+    border: 1px solid rgba(123, 199, 191, 0.45);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    margin-right: 4px;
+  }
+  .vehicle-temp .temp-icon {
+    width: 10px;
+    height: 10px;
+    background: #ffcc44;
+    border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .vehicle-temp .temp-icon::after {
     content: '';
     position: absolute;
-    left: -10px;
-    top: 0;
-    bottom: 0;
-    width: 12px;
-    background: rgba(20, 60, 90, 0.65);
-    border: 1.5px solid rgba(0, 210, 255, 0.35);
-    border-right: none;
-    border-radius: 50% 0 0 50%;
-    z-index: -1;
-  }
-  .vehicle-main {
-    font-size: 0.75rem;
-    gap: 12px;
-  }
-  .vehicle-temp {
-    font-size: 0.65rem;
-    color: #ffcc66;
-    gap: 6px;
-    margin-right: 6px;
-    padding: 6px 14px 6px 10px;
-    border-radius: 0 10px 10px 0;
-  }
-  .vehicle-temp::before {
-    width: 10px;
-    left: -8px;
+    left: 50%;
+    bottom: 60%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 6px;
+    background: #ffcc44;
+    border-radius: 2px;
   }
 
   /* ---------- Compass Replication ---------- */
@@ -777,20 +791,20 @@
       <div class="study-replication-label">Replication</div>
       <div style="display:flex;align-items:center;justify-content:center;height:100%;">
         <div class="vehicle-panel">
-          <div class="vehicle-tab vehicle-main">
-            <span>🔧</span><span>63</span>
-            <span style="color:#ffcc44;margin-left:12px;">⚡</span><span style="color:#ffcc44;">89</span>
+          <div class="vehicle-tab-main">
+            <span style="font-size:0.9rem;">🔧</span><span>63</span>
+            <span style="color:#ffcc44;margin-left:8px;">⚡</span><span style="color:#ffcc44;">89</span>
           </div>
-          <div class="vehicle-tab vehicle-temp">
-            <span style="font-size:0.9rem;">🌡️</span>
-            <span>14 °C</span>
+          <div class="vehicle-tab-temp">
+            <div class="temp-icon"></div>
+            <span>14°C</span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
-    <strong>Observed:</strong> Two separate blue translucent panels with lighter cyan borders. Both have pointed left ends (rounded bullet/tabs) and rounded right ends. Top panel is larger, containing wrench icon + white "63" and yellow lightning bolt + yellow "89". Bottom panel is smaller, indented from the left, containing thermometer icon + yellow "14 °C". No hard corners.
+    <strong>Observed:</strong> Two separate blue translucent panels. Top: larger pointed-tab panel (pointed left end, rounded right end) with cyan border, containing white wrench icon + white "63" and yellow lightning bolt + yellow "89". Bottom: much smaller rounded capsule (no pointed end, fully rounded) with slightly darker blue fill and cyan border, containing yellow thermometer + yellow "14°C". Gap of ~8px between panels. No hard corners.
   </div>
 </section>
 
