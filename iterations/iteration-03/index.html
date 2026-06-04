@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subnautica UI — Evidence Reference</title>
+<title>Subnautica UI — Evidence-Based Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -17,6 +17,8 @@
     --glass: rgba(0, 18, 32, 0.55);
     --border: rgba(0, 210, 255, 0.18);
     --cyan: #00d2ff;
+    --cyan-dim: rgba(0,210,255,0.12);
+    --cyan-mid: rgba(0,210,255,0.35);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -39,6 +41,7 @@
     pointer-events: none; z-index: 9998;
   }
 
+  /* ---------- Nav ---------- */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     height: 56px;
@@ -76,6 +79,7 @@
   .nav-links a:hover { color: var(--cyan); }
   .nav-links a:hover::after { transform: scaleX(1); }
 
+  /* ---------- Section Base ---------- */
   section {
     position: relative;
     padding: 80px 32px;
@@ -104,7 +108,7 @@
     color: var(--text-secondary);
     font-size: 1.05rem;
     max-width: 700px;
-    margin-bottom: 32px;
+    margin-bottom: 48px;
     font-weight: 300;
   }
   .evidence-note {
@@ -117,6 +121,7 @@
   }
   .evidence-note strong { color: var(--cyan); }
 
+  /* ---------- Hero ---------- */
   #hero {
     height: 100vh;
     max-width: none;
@@ -157,95 +162,511 @@
     margin: 0 auto 40px;
   }
 
-  /* Evidence Card */
-  .evidence-card {
+  /* ---------- Evidence + Replication Pair ---------- */
+  .study-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .study-pair { grid-template-columns: 1fr; }
+  }
+  .study-evidence {
     background: var(--glass);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 48px;
+    border-radius: 8px;
+    padding: 20px;
     backdrop-filter: blur(6px);
   }
-  .evidence-card img {
-    width: 100%;
+  .study-evidence img {
     max-width: 100%;
-    border-radius: 8px;
+    width: auto;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 4px;
     display: block;
-    margin-bottom: 20px;
-    border: 1px solid rgba(0,210,255,0.1);
+    margin: 0 auto 14px;
   }
-  .evidence-meta {
+  .study-evidence .caption {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.7rem;
     color: var(--text-dim);
     letter-spacing: 1px;
-    margin-bottom: 16px;
   }
-  .evidence-detail {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.7;
+  .study-replication {
+    background: rgba(0, 20, 30, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
   }
-  .evidence-detail strong { color: var(--text-primary); }
-  .evidence-detail ul {
-    margin-top: 10px;
-    margin-left: 18px;
-  }
-  .evidence-detail li {
-    margin-bottom: 6px;
-    color: var(--text-secondary);
+  .study-replication-label {
+    position: absolute;
+    top: 12px; right: 14px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
   }
 
-  /* Color swatches */
-  .swatch-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 20px;
+  /* ---------- Circular Meters Replication ---------- */
+  .meters-cluster {
+    position: relative;
+    width: 180px;
+    height: 150px;
   }
-  .swatch {
+  .meter-circle {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,12,22,0.65);
+    backdrop-filter: blur(4px);
+  }
+  .meter-o2 {
+    width: 92px; height: 92px;
+    top: 0; right: 0;
+    border: 2.5px solid #4ade80;
+    box-shadow: 0 0 14px rgba(74,222,128,0.15), inset 0 0 10px rgba(74,222,128,0.05);
+    flex-direction: column;
+  }
+  .meter-o2 .m-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2px;
+  }
+  .meter-o2 .m-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .meter-small {
+    width: 38px; height: 38px;
+    border: 2px solid;
+    overflow: hidden;
+  }
+  .meter-health {
+    top: 8px; left: 0;
+    border-color: #e85d4a;
+    box-shadow: 0 0 8px rgba(232,93,74,0.12);
+  }
+  .meter-health .eye-icon {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.85);
+    background: rgba(160,40,30,0.4);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .meter-health .eye-icon::after {
+    content: ''; position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(80,15,15,0.9);
+  }
+  .meter-food {
+    top: 54px; left: 18px;
+    border-color: #d4a017;
+    box-shadow: 0 0 8px rgba(212,160,23,0.12);
+  }
+  .meter-food .gauge-icon {
+    width: 20px; height: 20px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .meter-food .gauge-icon::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(rgba(255,255,255,0.85) 0deg, rgba(255,255,255,0.85) 80deg, transparent 80deg);
+    -webkit-mask: radial-gradient(transparent 50%, black 51%);
+    mask: radial-gradient(transparent 50%, black 51%);
+  }
+  .meter-water {
+    bottom: 0; left: 56px;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 8px rgba(78,205,196,0.12);
+  }
+  .meter-water .drop-icon {
+    width: 12px; height: 16px;
+    background: #4ecdc4;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform: rotate(-45deg);
+    opacity: 0.9;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ---------- Vehicle Panel Replication ---------- */
+  .vehicle-panel {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    position: relative;
+  }
+  /* Both panels: bullet/pill left, rounded right */
+  .vehicle-tab-main,
+  .vehicle-tab-temp {
+    display: flex;
+    align-items: center;
+    position: relative;
+    font-family: 'Orbitron', sans-serif;
+    /* Teardrop / bullet shape: left end fully rounded/pointed, right end rounded */
+    border-radius: 50% 12px 12px 50% / 50% 12px 12px 50%;
+  }
+  /* Top panel: glossy glass HUD */
+  .vehicle-tab-main {
+    color: #fff;
+    padding: 10px 18px 10px 22px;
+    gap: 12px;
+    font-size: 0.82rem;
+    text-shadow: 0 0 8px rgba(200, 240, 255, 0.7), 0 0 3px rgba(0, 180, 255, 0.5);
+    background: 
+      /* top specular sheen */
+      linear-gradient(180deg, rgba(200, 245, 255, 0.5) 0%, transparent 12%),
+      /* inner glow */
+      radial-gradient(ellipse 60% 55% at 45% 30%, rgba(100, 210, 255, 0.5) 0%, transparent 60%),
+      /* body gradient: lighter top, darker bottom */
+      linear-gradient(175deg, rgba(40, 130, 190, 0.65) 0%, rgba(20, 75, 125, 0.8) 50%, rgba(8, 35, 70, 0.9) 100%);
+    border: 1.5px solid rgba(130, 230, 250, 0.7);
+    box-shadow: 
+      /* strong outer bloom */
+      0 0 12px rgba(0, 180, 255, 0.45),
+      0 0 28px rgba(0, 150, 255, 0.2),
+      0 0 6px rgba(0, 210, 255, 0.3),
+      /* inner bevel */
+      inset 0 2px 4px rgba(220, 250, 255, 0.45),
+      inset 0 -3px 6px rgba(0, 20, 45, 0.5);
+    backdrop-filter: blur(10px) saturate(1.3);
+  }
+  /* Bottom panel: smaller, slightly darker glass */
+  .vehicle-tab-temp {
+    color: #ffe066;
+    padding: 6px 14px 6px 12px;
+    gap: 7px;
+    font-size: 0.65rem;
+    text-shadow: 0 0 6px rgba(255, 230, 120, 0.6), 0 0 2px rgba(255, 190, 70, 0.4);
+    background: 
+      linear-gradient(180deg, rgba(190, 240, 255, 0.4) 0%, transparent 12%),
+      radial-gradient(ellipse 60% 55% at 45% 30%, rgba(80, 190, 240, 0.45) 0%, transparent 60%),
+      linear-gradient(175deg, rgba(32, 105, 155, 0.6) 0%, rgba(16, 60, 95, 0.75) 50%, rgba(6, 30, 55, 0.88) 100%);
+    border: 1.5px solid rgba(120, 220, 240, 0.65);
+    box-shadow: 
+      0 0 10px rgba(0, 170, 255, 0.4),
+      0 0 22px rgba(0, 145, 255, 0.18),
+      0 0 5px rgba(0, 200, 255, 0.25),
+      inset 0 2px 3px rgba(200, 245, 255, 0.4),
+      inset 0 -2px 5px rgba(0, 18, 40, 0.45);
+    backdrop-filter: blur(10px) saturate(1.3);
+    margin-right: 2px;
+  }
+  .vehicle-tab-main .v-icon { 
+    font-size: 1rem; 
+    filter: drop-shadow(0 0 4px rgba(160, 230, 255, 0.8));
+  }
+  .vehicle-tab-temp .temp-icon {
+    width: 11px; height: 11px;
+    background: #ffe066;
+    border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+    box-shadow: 0 0 5px rgba(255, 230, 120, 0.7), 0 0 2px rgba(255, 200, 80, 0.4);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .vehicle-temp .temp-icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 60%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 6px;
+    background: #ffcc44;
+    border-radius: 2px;
+  }
+
+  /* ---------- Compass Replication ---------- */
+  .compass-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .compass-depths {
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
+    margin-bottom: 4px;
+    align-items: baseline;
+  }
+  .compass-depths .d-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    color: #fff;
+  }
+  .compass-depths .d-val .unit {
+    font-size: 0.55rem;
+    margin-left: 2px;
+    opacity: 0.7;
+  }
+  .compass-depths .d-val.warn { color: #ffcc44; }
+  .compass-arc {
+    width: 260px; height: 40px;
+    position: relative;
+  }
+  .compass-arc svg {
+    width: 100%; height: 100%;
+    overflow: visible;
+  }
+  .compass-dirs {
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
+    margin-top: 2px;
+  }
+  .compass-dirs span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    color: #ffcc44;
+    letter-spacing: 2px;
+    opacity: 0.8;
+  }
+
+  /* ---------- Crosshair Replication ---------- */
+  .crosshair-repl {
+    width: 24px; height: 24px;
+    position: relative;
+  }
+  .crosshair-repl svg {
+    width: 100%; height: 100%;
+    opacity: 0.6;
+  }
+
+  /* ---------- Hotbar Replication ---------- */
+  .hotbar-repl {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .slot-repl {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,210,255,0.25);
+    background: rgba(0,20,40,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    backdrop-filter: blur(4px);
+  }
+  .slot-repl.empty { opacity: 0.35; border-style: dashed; }
+  .hotbar-prompt {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  /* ---------- Resource Grid Replication ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    gap: 8px;
+  }
+  .res-cell {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    background: rgba(0,20,40,0.5);
+    border: 1px solid rgba(0,210,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 1.2rem;
+  }
+  .res-count {
+    position: absolute;
+    bottom: 2px; right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+  }
+  .res-count.ok { color: #4aff88; }
+  .res-count.missing { color: #ff6666; }
+
+  /* ---------- Subtitle Box (from bz02) ---------- */
+  .subtitle-box {
+    display: inline-block;
+    padding: 14px 28px;
+    background: rgba(0, 35, 55, 0.75);
+    border: 2px solid #00d2ff;
+    border-radius: 24px;
+    backdrop-filter: blur(12px);
+  }
+  .subtitle-speaker {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    color: #ffd700;
+    margin-bottom: 4px;
+  }
+  .subtitle-text {
+    font-size: 0.95rem;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- Crosshair Replication ---------- */
+  .crosshair-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .crosshair-center {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+    position: relative;
+    z-index: 2;
+  }
+  .crosshair-arm {
+    position: absolute;
+    background: rgba(255,255,255,0.65);
+    z-index: 1;
+  }
+  .crosshair-arm.top    { width: 1.5px; height: 14px; top: 12px; left: 50%; transform: translateX(-50%); }
+  .crosshair-arm.bottom { width: 1.5px; height: 14px; bottom: 12px; left: 50%; transform: translateX(-50%); }
+  .crosshair-arm.left   { width: 14px; height: 1.5px; left: 12px; top: 50%; transform: translateY(-50%); }
+  .crosshair-arm.right  { width: 14px; height: 1.5px; right: 12px; top: 50%; transform: translateY(-50%); }
+  .crosshair-ring {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  /* ---------- Hotbar Replication ---------- */
+  .hotbar-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
   }
-  .swatch-color {
-    width: 48px; height: 48px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  .hotbar-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
   }
-  .swatch-hex {
+  .hotbar-slots {
+    display: flex;
+    gap: 10px;
+  }
+  .hotbar-slot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,210,255,0.5);
+    background: rgba(0,8,16,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+  .hotbar-slot.filled {
+    background: rgba(40,80,140,0.6);
+    border-color: rgba(0,210,255,0.45);
+  }
+
+  /* ---------- Resource Grid Replication ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 32px);
+    gap: 8px 10px;
+  }
+  .resource-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .resource-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(0,8,16,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+  .resource-count {
+    font-size: 0.55rem;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.3px;
+  }
+  .resource-count.met { color: #4ecdc4; }
+  .resource-count.unmet { color: #e74c3c; }
+  .resource-cell.action .resource-icon {
+    border-color: rgba(0,210,255,0.45);
+    background: rgba(20,60,100,0.5);
+  }
+
+  /* ---------- Palette ---------- */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .swatch {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .swatch-color { height: 80px; position: relative; }
+  .swatch-info {
+    padding: 14px;
+    background: var(--glass);
+    backdrop-filter: blur(6px);
+  }
+  .swatch-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .swatch-source {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.6rem;
     color: var(--text-dim);
-    letter-spacing: 0.5px;
   }
-  .swatch-name {
-    font-size: 0.6rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,210,255,0.15), transparent);
-    max-width: 1200px;
-    margin: 0 auto;
+  .swatch-note {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-style: italic;
   }
 
-  footer {
-    text-align: center;
-    padding: 60px 32px;
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    font-family: 'Orbitron', sans-serif;
-    text-transform: uppercase;
-  }
-
-  /* Mood Cards */
+  /* ---------- Mood Cards ---------- */
   .mood-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -287,34 +708,23 @@
     margin-top: 4px;
   }
 
-  /* Palette */
-  .palette-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
+  /* ---------- Divider ---------- */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,210,255,0.15), transparent);
+    max-width: 1200px;
+    margin: 0 auto;
   }
-  .palette-swatch {
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .palette-color { height: 80px; position: relative; }
-  .palette-info {
-    padding: 14px;
-    background: var(--glass);
-    backdrop-filter: blur(6px);
-  }
-  .palette-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .palette-source {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    padding: 60px 32px;
+    font-size: 0.7rem;
     color: var(--text-dim);
+    letter-spacing: 2px;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
   }
 </style>
 </head>
@@ -331,6 +741,7 @@
     <a href="#crosshair">Crosshair</a>
     <a href="#hotbar">Hotbar</a>
     <a href="#resources">Resources</a>
+    <a href="#subtitle">Dialogue</a>
     <a href="#palette">Palette</a>
     <a href="#mood">Mood</a>
   </div>
@@ -351,26 +762,37 @@
 <section id="survival">
   <div class="section-label">Evidence 01</div>
   <h2 class="section-title">Survival Meters</h2>
-  <div class="section-desc">Bottom-left HUD cluster. Four circular meters arranged diagonally against the underwater environment. No panel behind them—fully transparent background.</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/bottom_left_meters.png" alt="Bottom-left meters from screenshot">
-    <div class="evidence-meta">Original crop — 358×152px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>Large O₂ circle (~2.4× diameter of small circles) with bright green/aqua border (#4ade80), white "O₂" and "225" inside.</li>
-        <li>Three smaller circles arranged diagonally to the left: red-bordered circle (#e85d4a) contains a white ring with dark center (eye/donut shape); yellow-bordered circle (#d4a017) contains a white arc segment on dark fill (gauge); blue-bordered circle (#4ecdc4) contains a light blue teardrop.</li>
-        <li>All have dark translucent fills. No rectangular panel behind the cluster.</li>
-        <li>Text is white, sans-serif, centered.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-left crop). Four circular meters arranged in a cluster against the underwater environment. The background is fully transparent—no panel behind them.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_left_meters.png" alt="Bottom-left meters from screenshot">
+      <div class="caption">Original crop — 358×152px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:#4ade80"></div><div class="swatch-hex">#4ade80</div><div class="swatch-name">O₂ Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#e85d4a"></div><div class="swatch-hex">#e85d4a</div><div class="swatch-name">Health Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#d4a017"></div><div class="swatch-hex">#d4a017</div><div class="swatch-name">Food Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#4ecdc4"></div><div class="swatch-hex">#4ecdc4</div><div class="swatch-name">Water Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(0,12,22,0.65)"></div><div class="swatch-hex">rgba(0,12,22,0.65)</div><div class="swatch-name">Fill</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="meters-cluster">
+          <div class="meter-circle meter-o2">
+            <span class="m-label">O<sub>2</sub></span>
+            <span class="m-val">225</span>
+          </div>
+          <div class="meter-circle meter-small meter-health">
+            <div class="eye-icon"></div>
+          </div>
+          <div class="meter-circle meter-small meter-food">
+            <div class="gauge-icon"></div>
+          </div>
+          <div class="meter-circle meter-small meter-water">
+            <div class="drop-icon"></div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Large O<sub>2</sub> circle (~2.4× diameter of small circles) with bright green/aqua border, white "O<sub>2</sub>" and "225" inside. Three smaller circles arranged diagonally to the left: red-bordered circle contains a white ring with dark center (eye/donut shape); yellow-bordered circle contains a white arc segment on dark fill (gauge); blue-bordered circle contains a light blue teardrop. All have dark translucent fills. No rectangular panel behind the cluster. Text is white, sans-serif, centered.
   </div>
 </section>
 
@@ -380,26 +802,32 @@
 <section id="vehicle">
   <div class="section-label">Evidence 02</div>
   <h2 class="section-title">Vehicle Status Panel</h2>
-  <div class="section-desc">Bottom-right HUD when piloting a vehicle. Two separate translucent panels with organic bullet-shaped left ends. Strong cyan glow bloom on borders.</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/bottom_right_vehicle.png" alt="Vehicle panel from screenshot">
-    <div class="evidence-meta">Original crop — 410×152px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>Two separate blue translucent panels with lighter cyan borders. Both have smooth bullet-shaped left ends (rounded teardrop/point) and rounded right ends.</li>
-        <li>Top panel is larger, containing wrench icon + white "63" and yellow lightning bolt + yellow "89".</li>
-        <li>Bottom panel is smaller, containing thermometer icon + yellow "14°C". Indented offset from left edge of top panel.</li>
-        <li>Gap of ~3px between panels. No hard corners.</li>
-        <li>Strong outer glow bloom (engine post-processing, not CSS-box-shadow). Translucent glass-like interior with specular highlight on top edge.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-right crop). Two separate pointed-tab blue panels: a larger one for wrench/lightning readouts, a smaller one below for temperature. No hard corners—all curves.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_right_vehicle.png" alt="Vehicle panel from screenshot">
+      <div class="caption">Original crop — 410×152px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:#00d2ff"></div><div class="swatch-hex">#00d2ff</div><div class="swatch-name">Cyan Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ffcc44"></div><div class="swatch-hex">#ffcc44</div><div class="swatch-name">Lightning / Temp</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(0,18,32,0.55)"></div><div class="swatch-hex">rgba(0,18,32,0.55)</div><div class="swatch-name">Panel Fill</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ffffff"></div><div class="swatch-hex">#ffffff</div><div class="swatch-name">Text / Wrench</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="vehicle-panel">
+          <div class="vehicle-tab-main">
+            <span class="v-icon">🔧</span><span>63</span>
+            <span style="color:#ffcc44;margin-left:8px;">⚡</span><span style="color:#ffcc44;">89</span>
+          </div>
+          <div class="vehicle-tab-temp">
+            <div class="temp-icon"></div>
+            <span>14°C</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Two separate blue translucent panels with lighter cyan borders. Both have smooth bullet-shaped left ends (rounded teardrop/point) and rounded right ends. Top panel is larger, containing wrench icon + white "63" and yellow lightning bolt + yellow "89". Bottom panel is smaller, containing thermometer icon + yellow "14°C". Gap of ~3px between panels. No hard corners.
   </div>
 </section>
 
@@ -409,25 +837,48 @@
 <section id="compass">
   <div class="section-label">Evidence 03</div>
   <h2 class="section-title">Depth &amp; Compass</h2>
-  <div class="section-desc">Top-center HUD strip. Curved compass arc with depth numbers above and cardinal directions below. Two-toned arc (cyan left, yellow right).</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/top_center_depth.png" alt="Compass from screenshot">
-    <div class="evidence-meta">Original crop — 409×108px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>Two numbers at top: "270" in white with smaller "m" suffix, "300" in yellow/amber.</li>
-        <li>Beneath them, a curved arc split into two colors: left half cyan (#00eaff), right half yellow (#f0c040).</li>
-        <li>Small tick marks below the arc. "SW" and "W" labels below ticks in yellow/gold (#e0b050).</li>
-        <li>Yellow downward-pointing triangle at center indicates heading. Dark shapes on edges suggest helmet/visor framing.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (top-center crop). Curved compass strip with depth numbers above and cardinal directions below.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/top_center_depth.png" alt="Compass from screenshot">
+      <div class="caption">Original crop — 409×108px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:#00eaff"></div><div class="swatch-hex">#00eaff</div><div class="swatch-name">Arc Left</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#f0c040"></div><div class="swatch-hex">#f0c040</div><div class="swatch-name">Arc Right</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#e0b050"></div><div class="swatch-hex">#e0b050</div><div class="swatch-name">Dir Labels</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ffcc44"></div><div class="swatch-hex">#ffcc44</div><div class="swatch-name">Warn / Marker</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="compass-wrap">
+          <div class="compass-depths">
+            <span class="d-val">270<span class="unit">m</span></span>
+            <span class="d-val warn">300</span>
+          </div>
+          <div class="compass-arc">
+            <svg viewBox="0 0 260 40" preserveAspectRatio="none">
+              <!-- left half cyan -->
+              <path d="M 0 35 Q 65 5 130 12" fill="none" stroke="rgba(0,210,255,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- right half yellow -->
+              <path d="M 130 12 Q 195 5 260 35" fill="none" stroke="rgba(255,204,68,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="20" y1="32" x2="20" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <line x1="60" y1="28" x2="60" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="100" y1="22" x2="100" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="140" y1="20" x2="140" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="180" y1="24" x2="180" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="220" y1="30" x2="220" y2="38" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+              <line x1="240" y1="32" x2="240" y2="38" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+              <polygon points="130,38 126,45 134,45" fill="#ffcc44"/>
+            </svg>
+          </div>
+          <div class="compass-dirs">
+            <span>SW</span>
+            <span>W</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Two numbers at top: "270" in white with smaller "m" suffix, "300" in yellow/amber. Beneath them, a curved arc split into two colors: left half cyan, right half yellow. Small tick marks below the arc. "SW" and "W" labels below ticks in yellow/gold. Yellow downward-pointing triangle at center indicates heading. Dark shapes on edges suggest helmet/visor framing.
   </div>
 </section>
 
@@ -437,24 +888,30 @@
 <section id="crosshair">
   <div class="section-label">Evidence 04</div>
   <h2 class="section-title">Crosshair</h2>
-  <div class="section-desc">Center-screen reticle. Minimalist dot with four radial arms and a faint outer ring.</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/center_crosshair.png" alt="Crosshair from screenshot">
-    <div class="evidence-meta">Original crop — 103×43px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>Small white center dot (~5px).</li>
-        <li>Four short radial lines extending outward (top, bottom, left, right) approximately 12–14px long, ~1.5px thick, white at ~65% opacity.</li>
-        <li>Faint outer ring circle at very low opacity (~8%). Overall size ~40–45px diameter.</li>
-        <li>Clean, minimal, no color.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (center crop). Minimalist centered reticle with small dot and short radial arms. Very low opacity outer ring.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/center_crosshair.png" alt="Crosshair from screenshot">
+      <div class="caption">Original crop — 103×43px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:rgba(255,255,255,0.9)"></div><div class="swatch-hex">rgba(255,255,255,0.9)</div><div class="swatch-name">Center Dot</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(255,255,255,0.65)"></div><div class="swatch-hex">rgba(255,255,255,0.65)</div><div class="swatch-name">Arms</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(255,255,255,0.08)"></div><div class="swatch-hex">rgba(255,255,255,0.08)</div><div class="swatch-name">Outer Ring</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="crosshair-wrap">
+          <div class="crosshair-ring"></div>
+          <div class="crosshair-arm top"></div>
+          <div class="crosshair-arm bottom"></div>
+          <div class="crosshair-arm left"></div>
+          <div class="crosshair-arm right"></div>
+          <div class="crosshair-center"></div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Small white center dot (~5px). Four short radial lines extending outward (top, bottom, left, right) approximately 12–14px long, ~1.5px thick, white at ~65% opacity. Faint outer ring circle at very low opacity (~8%). Overall size ~40–45px diameter. Clean, minimal, no color.
   </div>
 </section>
 
@@ -464,24 +921,31 @@
 <section id="hotbar">
   <div class="section-label">Evidence 05</div>
   <h2 class="section-title">Hotbar &amp; Action Prompt</h2>
-  <div class="section-desc">Bottom-center HUD. "Exit [E]" prompt above four circular equipment slots.</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/bottom_center_hotbar.png" alt="Hotbar from screenshot">
-    <div class="evidence-meta">Original crop — 409×108px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>White text "Exit [E]" centered above slot row, sans-serif, small.</li>
-        <li>Four circular slots (~36px) in horizontal line with even spacing.</li>
-        <li>Empty slots: dark interior (#00080a-ish) with bright cyan/aqua 2px border.</li>
-        <li>Filled slots: medium blue interior with white/light icon. Slots 3 and 4 filled; 1 and 2 empty.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-center crop). "Exit [E]" prompt centered above four circular slots. Empty slots show dark fill with bright cyan ring; filled slots show blue background with item icon.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_center_hotbar.png" alt="Hotbar from screenshot">
+      <div class="caption">Original crop — 409×108px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:#00080a"></div><div class="swatch-hex">#00080a</div><div class="swatch-name">Empty Interior</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#00d2ff"></div><div class="swatch-hex">#00d2ff</div><div class="swatch-name">Slot Border</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(40,80,140,0.6)"></div><div class="swatch-hex">rgba(40,80,140,0.6)</div><div class="swatch-name">Filled Interior</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="hotbar-wrap">
+          <div class="hotbar-label">Exit [E]</div>
+          <div class="hotbar-slots">
+            <div class="hotbar-slot"></div>
+            <div class="hotbar-slot"></div>
+            <div class="hotbar-slot filled">🧪</div>
+            <div class="hotbar-slot filled">✋</div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> White text "Exit [E]" centered above slot row, sans-serif, small. Four circular slots (~36px) in horizontal line with even spacing. Empty slots: dark interior (#00080a-ish) with bright cyan/aqua 2px border. Filled slots: medium blue interior with white/light icon. Slots 3 and 4 filled; 1 and 2 empty.
   </div>
 </section>
 
@@ -491,24 +955,63 @@
 <section id="resources">
   <div class="section-label">Evidence 06</div>
   <h2 class="section-title">Resource Requirements Grid</h2>
-  <div class="section-desc">Top-right HUD when fabricating. Circular resource icons in a 3×4 grid with fractional counts below.</div>
-  <div class="evidence-card gs-reveal">
-    <img src="ui_evidence/top_right_resources.png" alt="Resource grid from screenshot">
-    <div class="evidence-meta">Original crop — 308×151px from sn07_1131.jpg</div>
-    <div class="evidence-detail">
-      <strong>Observed:</strong>
-      <ul>
-        <li>Circular icons (~32px) in grid, dark fill with subtle border.</li>
-        <li>Fraction text below each: green (#4ecdc4) when current ≥ required, red (#e74c3c) when current < required.</li>
-        <li>Rightmost column appears to contain larger action/category buttons with blue-tinted fill.</li>
-        <li>No visible panel behind the grid.</li>
-      </ul>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (top-right crop). Circular resource icons arranged in a 3×4 grid with fractional counts below. Green text when requirement met; red when unmet.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/top_right_resources.png" alt="Resource grid from screenshot">
+      <div class="caption">Original crop — 308×151px from sn07_1131.jpg</div>
     </div>
-    <div class="swatch-row">
-      <div class="swatch"><div class="swatch-color" style="background:#4ecdc4"></div><div class="swatch-hex">#4ecdc4</div><div class="swatch-name">Met Text</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#e74c3c"></div><div class="swatch-hex">#e74c3c</div><div class="swatch-name">Unmet Text</div></div>
-      <div class="swatch"><div class="swatch-color" style="background:rgba(0,8,16,0.6)"></div><div class="swatch-hex">rgba(0,8,16,0.6)</div><div class="swatch-name">Icon Fill</div></div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="resource-grid">
+          <div class="resource-cell"><div class="resource-icon">📋</div><div class="resource-count met">2/2</div></div>
+          <div class="resource-cell"><div class="resource-icon">💎</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell action"><div class="resource-icon">⚙️</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥞</div><div class="resource-count met">2/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">🍊</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥣</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell action"><div class="resource-icon">📱</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥗</div><div class="resource-count met">2/2</div></div>
+          <div class="resource-cell"><div class="resource-icon">📚</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">📖</div><div class="resource-count unmet">0/1</div></div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Circular icons (~32px) in grid, dark fill with subtle border. Fraction text below each: green when current ≥ required, red when current < required. Rightmost column appears to contain larger action/category buttons with blue-tinted fill. No visible panel behind the grid.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DIALOGUE BOX -->
+<section id="subtitle">
+  <div class="section-label">Evidence 07</div>
+  <h2 class="section-title">Dialogue Subtitle Box</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>below-zero/bz02_6995.jpg</code>. A wide rounded rectangle with bright cyan border, floating above the bottom of the screen. Speaker name in yellow, dialogue in white.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="../../below-zero/bz02_6995.jpg" alt="Subtitle box from Below Zero" style="max-height:280px; object-fit:cover; object-position:center 70%;">
+      <div class="caption">Original screenshot — bz02_6995.jpg (cropped to show subtitle)</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="subtitle-box">
+          <div class="subtitle-speaker">Al-An:</div>
+          <div class="subtitle-text">You are... different. I will observe.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Pill-shaped container with large border-radius (~25px). Border is solid bright cyan (#00ffff). Background is dark teal with strong transparency. Speaker name is bright yellow/gold. Body text is plain white. Box floats above bottom edge with generous padding. No visible panel behind it extending to screen edges.
   </div>
 </section>
 
@@ -516,78 +1019,88 @@
 
 <!-- PALETTE -->
 <section id="palette">
-  <div class="section-label">Evidence 07</div>
+  <div class="section-label">Extracted Colors</div>
   <h2 class="section-title">Palette from UI Evidence</h2>
-  <div class="section-desc">Colors extracted directly from the screenshot crops above. No guessing.</div>
-  <div class="palette-grid gs-reveal">
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#00d2ff"></div>
-      <div class="palette-info">
-        <div class="palette-name">Cyan Primary</div>
-        <div class="palette-source">#00d2ff — Borders, glow, UI accent</div>
+  <p class="section-desc">Approximated hex values sampled from the UI elements in <code>sn07_1131.jpg</code> and <code>bz02_6995.jpg</code>. These are visual approximations, not exact code values from the game engine.</p>
+  <div class="palette-grid">
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#4ade80;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">O2 Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Bright green/aqua circle border</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#4ade80"></div>
-      <div class="palette-info">
-        <div class="palette-name">O₂ Green</div>
-        <div class="palette-source">#4ade80 — Oxygen meter border</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#e85d4a;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Health Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Red/orange small circle border</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#e85d4a"></div>
-      <div class="palette-info">
-        <div class="palette-name">Health Red</div>
-        <div class="palette-source">#e85d4a — Health meter border</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#d4a017;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Food Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Yellow/gold small circle border</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#d4a017"></div>
-      <div class="palette-info">
-        <div class="palette-name">Food Yellow</div>
-        <div class="palette-source">#d4a017 — Food meter border</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#4ecdc4;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Water Ring</div>
+        <div class="swatch-source">sn07 bottom-left</div>
+        <div class="swatch-note">Cyan/teal small circle border</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#4ecdc4"></div>
-      <div class="palette-info">
-        <div class="palette-name">Water Aqua</div>
-        <div class="palette-source">#4ecdc4 — Water meter, met text</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#1a4a6a;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Vehicle Panel</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Medium-dark blue translucent fill</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#ffcc44"></div>
-      <div class="palette-info">
-        <div class="palette-name">Warn Amber</div>
-        <div class="palette-source">#ffcc44 — Depth warnings, lightning, temp</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#4dd0e1;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Panel Border</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Lighter cyan outline on vehicle HUD</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#e0b050"></div>
-      <div class="palette-info">
-        <div class="palette-name">Compass Gold</div>
-        <div class="palette-source">#e0b050 — Cardinal direction labels</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#ffcc44;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Warning / Temp</div>
+        <div class="swatch-source">sn07 bottom-right</div>
+        <div class="swatch-note">Yellow for power and temperature values</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:rgba(0,18,32,0.55)"></div>
-      <div class="palette-info">
-        <div class="palette-name">Panel Glass</div>
-        <div class="palette-source">rgba(0,18,32,0.55) — HUD panel fill</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#00d2ff; box-shadow:inset 0 0 20px rgba(0,0,0,0.3);"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Subtitle Border</div>
+        <div class="swatch-source">bz02 bottom-center</div>
+        <div class="swatch-note">Bright cyan dialogue box outline</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#010b14"></div>
-      <div class="palette-info">
-        <div class="palette-name">Abyssal BG</div>
-        <div class="palette-source">#010b14 — Deepest background</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#ffd700;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">Speaker Name</div>
+        <div class="swatch-source">bz02 bottom-center</div>
+        <div class="swatch-note">Yellow/gold for speaker label</div>
       </div>
     </div>
-    <div class="palette-swatch">
-      <div class="palette-color" style="background:#e0f7ff"></div>
-      <div class="palette-info">
-        <div class="palette-name">Text Primary</div>
-        <div class="palette-source">#e0f7ff — Primary UI text</div>
+    <div class="swatch gs-reveal">
+      <div class="swatch-color" style="background:#ffffff;"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">UI Text</div>
+        <div class="swatch-source">sn07 / bz02</div>
+        <div class="swatch-note">Pure white for numbers and labels</div>
       </div>
     </div>
   </div>
@@ -597,83 +1110,149 @@
 
 <!-- MOOD -->
 <section id="mood">
-  <div class="section-label">Evidence 08</div>
+  <div class="section-label">Environment Reference</div>
   <h2 class="section-title">Biome Mood</h2>
-  <div class="section-desc">Environmental context from the full screenshots. These establish the color grading and atmosphere the UI lives inside.</div>
-  <div class="mood-grid gs-reveal">
-    <div class="mood-card">
-      <img src="../../subnautica/sn07_1131.jpg" alt="Safe Shallows daytime">
-      <div class="mood-overlay">
-        <div class="mood-biome">Safe Shallows</div>
-        <div class="mood-source">sn07_1131.jpg</div>
-      </div>
-    </div>
-    <div class="mood-card">
-      <img src="../../subnautica/sn05_8434.jpg" alt="Kelp Forest">
+  <p class="section-desc">Actual in-game screenshots from this repository, used to understand what the UI must read against.</p>
+  <div class="mood-grid">
+    <div class="mood-card gs-reveal">
+      <img src="../../subnautica/sn01_9354.jpg" alt="Kelp Forest" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Kelp Forest</div>
-        <div class="mood-source">sn05_8434.jpg</div>
+        <div class="mood-source">sn01_9354.jpg</div>
       </div>
     </div>
-    <div class="mood-card">
-      <img src="../../subnautica/sn09_3672.jpg" alt="Crash Zone">
+    <div class="mood-card gs-reveal">
+      <img src="../../subnautica/sn02_1778.jpg" alt="Safe Shallows" loading="lazy">
+      <div class="mood-overlay">
+        <div class="mood-biome">Safe Shallows</div>
+        <div class="mood-source">sn02_1778.jpg</div>
+      </div>
+    </div>
+    <div class="mood-card gs-reveal">
+      <img src="../../subnautica/sn06_2189.jpg" alt="Mountain Island" loading="lazy">
+      <div class="mood-overlay">
+        <div class="mood-biome">Mountain Island</div>
+        <div class="mood-source">sn06_2189.jpg</div>
+      </div>
+    </div>
+    <div class="mood-card gs-reveal">
+      <img src="../../subnautica/sn03_4271.jpg" alt="Crash Zone" loading="lazy">
       <div class="mood-overlay">
         <div class="mood-biome">Crash Zone</div>
-        <div class="mood-source">sn09_3672.jpg</div>
+        <div class="mood-source">sn03_4271.jpg</div>
       </div>
     </div>
-    <div class="mood-card">
-      <img src="../../subnautica/sn10_1968.jpg" alt="Night dive">
+    <div class="mood-card gs-reveal">
+      <img src="../../subnautica/sn08_1158.jpg" alt="Night" loading="lazy">
       <div class="mood-overlay">
-        <div class="mood-biome">Night Dive</div>
-        <div class="mood-source">sn10_1968.jpg</div>
+        <div class="mood-biome">Bioluminescent Night</div>
+        <div class="mood-source">sn08_1158.jpg</div>
+      </div>
+    </div>
+    <div class="mood-card gs-reveal">
+      <img src="../../below-zero/bz03_9536.jpg" alt="Frozen Leviathan" loading="lazy">
+      <div class="mood-overlay">
+        <div class="mood-biome">Frozen Leviathan</div>
+        <div class="mood-source">bz03_9536.jpg</div>
       </div>
     </div>
   </div>
 </section>
 
-<footer>4546B // Evidence Archive // Unknown Worlds Entertainment</footer>
+<footer>
+  Evidence-based reference // Iteration 03 // Verified against repository screenshots
+</footer>
 
 <script>
-/* Hero canvas: subtle drifting particles */
-const cvs = document.getElementById('hero-canvas');
-const ctx = cvs.getContext('2d');
+/* ---------- Hero Canvas ---------- */
+const c = document.getElementById('hero-canvas');
+const x = c.getContext('2d');
 let W, H;
-function resize(){ W=cvs.width=window.innerWidth; H=cvs.height=window.innerHeight; }
+function resize() {
+  W = c.width = window.innerWidth;
+  H = c.height = window.innerHeight;
+}
 window.addEventListener('resize', resize);
 resize();
 
-const particles = Array.from({length: 60}, () => ({
-  x: Math.random()*W, y: Math.random()*H,
-  r: Math.random()*1.5+0.3,
-  vx: (Math.random()-0.5)*0.15,
-  vy: (Math.random()-0.5)*0.15,
-  a: Math.random()*0.25+0.05
-}));
-
-function draw() {
-  ctx.clearRect(0,0,W,H);
-  particles.forEach(p => {
-    p.x += p.vx; p.y += p.vy;
-    if(p.x<0) p.x=W; if(p.x>W) p.x=0;
-    if(p.y<0) p.y=H; if(p.y>H) p.y=0;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle = `rgba(0,210,255,${p.a})`;
-    ctx.fill();
+const particles = [];
+for (let i = 0; i < 60; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-0.5)*0.15, vy: -Math.random()*0.2 - 0.03,
+    r: Math.random()*1 + 0.3,
+    a: Math.random()*0.12 + 0.04
   });
-  requestAnimationFrame(draw);
 }
-draw();
 
-/* GSAP scroll reveals */
-gsap.registerPlugin(ScrollTrigger);
-gsap.utils.toArray('.gs-reveal').forEach(el => {
-  gsap.from(el, {
-    y: 40, opacity: 0, duration: 0.8,
-    ease: 'power2.out',
-    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+function drawHero(t) {
+  const g = x.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0a2a2a');
+  g.addColorStop(0.4, '#061e1e');
+  g.addColorStop(0.8, '#021212');
+  g.addColorStop(1, '#000808');
+  x.fillStyle = g;
+  x.fillRect(0,0,W,H);
+
+  x.save();
+  x.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 4; i++) {
+    const cx = (i * 0.25 + 0.1) * W + Math.sin(t*0.0001 + i)*20;
+    const w = 60 + i*18;
+    const gr = x.createLinearGradient(cx-w, 0, cx+w, H*0.45);
+    gr.addColorStop(0, `rgba(160,240,220,${0.02 + Math.sin(t*0.0002+i)*0.008})`);
+    gr.addColorStop(1, 'rgba(160,240,220,0)');
+    x.fillStyle = gr;
+    x.beginPath();
+    x.moveTo(cx-w*0.2, 0);
+    x.lineTo(cx+w*0.2, 0);
+    x.lineTo(cx+w, H*0.4);
+    x.lineTo(cx-w, H*0.4);
+    x.closePath();
+    x.fill();
+  }
+  x.restore();
+
+  x.fillStyle = '#aaddcc';
+  particles.forEach(p => {
+    p.x += p.vx + Math.sin(t*0.0004 + p.y*0.005)*0.05;
+    p.y += p.vy;
+    if (p.y < -10) { p.y = H+10; p.x = Math.random()*W; }
+    x.globalAlpha = p.a;
+    x.beginPath();
+    x.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    x.fill();
   });
+  x.globalAlpha = 1;
+
+  requestAnimationFrame(drawHero);
+}
+drawHero(0);
+
+/* ---------- GSAP Scroll Reveals ---------- */
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.utils.toArray('.gs-reveal').forEach((el) => {
+  gsap.from(el, {
+    y: 24,
+    opacity: 0,
+    duration: 0.5,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: el,
+      start: 'top 88%',
+      toggleActions: 'play none none none'
+    }
+  });
+});
+
+gsap.from('.hero-content > *', {
+  y: 30,
+  opacity: 0,
+  duration: 0.9,
+  stagger: 0.18,
+  ease: 'power3.out',
+  delay: 0.3
 });
 </script>
 </body>
