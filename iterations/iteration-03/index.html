@@ -311,46 +311,60 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0;
+    gap: 4px;
+  }
+  .vehicle-tab {
+    background: rgba(20, 60, 90, 0.65);
+    border: 1.5px solid rgba(0, 210, 255, 0.35);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+  }
+  .vehicle-tab .tab-point {
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 8px solid rgba(0, 210, 255, 0.35);
+    z-index: 0;
+  }
+  .vehicle-tab .tab-point::after {
+    content: '';
+    position: absolute;
+    left: 1.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 7px solid rgba(20, 60, 90, 0.65);
   }
   .vehicle-main {
-    background: rgba(20, 60, 90, 0.6);
-    border: 1.5px solid rgba(0, 210, 255, 0.35);
     border-radius: 0 14px 14px 0;
-    padding: 10px 18px;
-    display: flex;
-    align-items: center;
+    padding: 10px 18px 10px 14px;
     gap: 18px;
-    backdrop-filter: blur(6px);
-    position: relative;
-    clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%);
-  }
-  .vehicle-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Orbitron', sans-serif;
     font-size: 0.75rem;
-    color: #fff;
   }
-  .vehicle-row .v-icon { font-size: 1rem; }
-  .vehicle-row .v-val { min-width: 24px; }
+  .vehicle-main .tab-point { border-right-width: 10px; border-top-width: 14px; border-bottom-width: 14px; left: -10px; }
+  .vehicle-main .tab-point::after { border-right-width: 9px; border-top-width: 11px; border-bottom-width: 11px; left: 2px; }
   .vehicle-temp {
-    background: rgba(20, 60, 90, 0.6);
-    border: 1.5px solid rgba(0, 210, 255, 0.35);
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    padding: 6px 14px;
-    margin-top: -1px;
-    margin-right: 0;
-    margin-left: 24px;
-    display: flex;
-    align-items: center;
+    border-radius: 0 10px 10px 0;
+    padding: 6px 14px 6px 10px;
     gap: 6px;
-    font-family: 'Orbitron', sans-serif;
     font-size: 0.65rem;
     color: #ffcc66;
+    margin-right: 6px;
   }
+  .vehicle-temp .tab-point { border-right-width: 8px; border-top-width: 10px; border-bottom-width: 10px; left: -8px; }
+  .vehicle-temp .tab-point::after { border-right-width: 7px; border-top-width: 8px; border-bottom-width: 8px; left: 1.5px; }
 
   /* ---------- Compass Replication ---------- */
   .compass-wrap {
@@ -483,6 +497,108 @@
     letter-spacing: 0.3px;
   }
 
+  /* ---------- Crosshair Replication ---------- */
+  .crosshair-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .crosshair-center {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+    position: relative;
+    z-index: 2;
+  }
+  .crosshair-arm {
+    position: absolute;
+    background: rgba(255,255,255,0.65);
+    z-index: 1;
+  }
+  .crosshair-arm.top    { width: 1.5px; height: 14px; top: 12px; left: 50%; transform: translateX(-50%); }
+  .crosshair-arm.bottom { width: 1.5px; height: 14px; bottom: 12px; left: 50%; transform: translateX(-50%); }
+  .crosshair-arm.left   { width: 14px; height: 1.5px; left: 12px; top: 50%; transform: translateY(-50%); }
+  .crosshair-arm.right  { width: 14px; height: 1.5px; right: 12px; top: 50%; transform: translateY(-50%); }
+  .crosshair-ring {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  /* ---------- Hotbar Replication ---------- */
+  .hotbar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .hotbar-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
+  }
+  .hotbar-slots {
+    display: flex;
+    gap: 10px;
+  }
+  .hotbar-slot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,210,255,0.5);
+    background: rgba(0,8,16,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+  .hotbar-slot.filled {
+    background: rgba(40,80,140,0.6);
+    border-color: rgba(0,210,255,0.45);
+  }
+
+  /* ---------- Resource Grid Replication ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 32px);
+    gap: 8px 10px;
+  }
+  .resource-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .resource-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(0,8,16,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+  .resource-count {
+    font-size: 0.55rem;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.3px;
+  }
+  .resource-count.met { color: #4ecdc4; }
+  .resource-count.unmet { color: #e74c3c; }
+  .resource-cell.action .resource-icon {
+    border-color: rgba(0,210,255,0.45);
+    background: rgba(20,60,100,0.5);
+  }
+
   /* ---------- Palette ---------- */
   .palette-grid {
     display: grid;
@@ -591,6 +707,9 @@
     <a href="#survival">Survival</a>
     <a href="#vehicle">Vehicle</a>
     <a href="#compass">Compass</a>
+    <a href="#crosshair">Crosshair</a>
+    <a href="#hotbar">Hotbar</a>
+    <a href="#resources">Resources</a>
     <a href="#subtitle">Dialogue</a>
     <a href="#palette">Palette</a>
     <a href="#mood">Mood</a>
@@ -653,7 +772,7 @@
   <div class="section-label">Evidence 02</div>
   <h2 class="section-title">Vehicle Status Panel</h2>
   <div class="evidence-note">
-    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-right crop). A stepped/rounded blue panel with wrench, lightning bolt, and thermometer icons. No hard corners—all curves.
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-right crop). Two separate pointed-tab blue panels: a larger one for wrench/lightning readouts, a smaller one below for temperature. No hard corners—all curves.
   </div>
   <div class="study-pair gs-reveal">
     <div class="study-evidence">
@@ -664,11 +783,13 @@
       <div class="study-replication-label">Replication</div>
       <div style="display:flex;align-items:center;justify-content:center;height:100%;">
         <div class="vehicle-panel">
-          <div class="vehicle-main">
-            <div class="vehicle-row"><span class="v-icon">🔧</span><span class="v-val">63</span></div>
-            <div class="vehicle-row"><span class="v-icon" style="color:#ffcc44;">⚡</span><span class="v-val">89</span></div>
+          <div class="vehicle-tab vehicle-main">
+            <div class="tab-point"></div>
+            <span>🔧</span><span>63</span>
+            <span style="color:#ffcc44;margin-left:12px;">⚡</span><span style="color:#ffcc44;">89</span>
           </div>
-          <div class="vehicle-temp">
+          <div class="vehicle-tab vehicle-temp">
+            <div class="tab-point"></div>
             <span style="font-size:0.9rem;">🌡️</span>
             <span>14 °C</span>
           </div>
@@ -677,7 +798,7 @@
     </div>
   </div>
   <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
-    <strong>Observed:</strong> Medium-dark blue translucent background with lighter cyan border. Left end tapers to a rounded point (bullet shape). Main body contains two readouts side by side. A smaller rounded section sits below, indented from the left and aligned to the right half of the main body. Temperature text is yellow/gold. Wrench and numbers are white. Lightning bolt and its number appear yellow-tinged.
+    <strong>Observed:</strong> Two separate blue translucent panels with lighter cyan borders. Both have pointed left ends (rounded bullet/tabs) and rounded right ends. Top panel is larger, containing wrench icon + white "63" and yellow lightning bolt + yellow "89". Bottom panel is smaller, indented from the left, containing thermometer icon + yellow "14 °C". No hard corners.
   </div>
 </section>
 
@@ -734,9 +855,113 @@
 
 <div class="divider"></div>
 
+<!-- CROSSHAIR -->
+<section id="crosshair">
+  <div class="section-label">Evidence 04</div>
+  <h2 class="section-title">Crosshair</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (center crop). Minimalist centered reticle with small dot and short radial arms. Very low opacity outer ring.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/center_crosshair.png" alt="Crosshair from screenshot">
+      <div class="caption">Original crop — 103×43px from sn07_1131.jpg</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="crosshair-wrap">
+          <div class="crosshair-ring"></div>
+          <div class="crosshair-arm top"></div>
+          <div class="crosshair-arm bottom"></div>
+          <div class="crosshair-arm left"></div>
+          <div class="crosshair-arm right"></div>
+          <div class="crosshair-center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Small white center dot (~5px). Four short radial lines extending outward (top, bottom, left, right) approximately 12–14px long, ~1.5px thick, white at ~65% opacity. Faint outer ring circle at very low opacity (~8%). Overall size ~40–45px diameter. Clean, minimal, no color.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOTBAR -->
+<section id="hotbar">
+  <div class="section-label">Evidence 05</div>
+  <h2 class="section-title">Hotbar &amp; Action Prompt</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (bottom-center crop). "Exit [E]" prompt centered above four circular slots. Empty slots show dark fill with bright cyan ring; filled slots show blue background with item icon.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/bottom_center_hotbar.png" alt="Hotbar from screenshot">
+      <div class="caption">Original crop — 409×108px from sn07_1131.jpg</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="hotbar-wrap">
+          <div class="hotbar-label">Exit [E]</div>
+          <div class="hotbar-slots">
+            <div class="hotbar-slot"></div>
+            <div class="hotbar-slot"></div>
+            <div class="hotbar-slot filled">🧪</div>
+            <div class="hotbar-slot filled">✋</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> White text "Exit [E]" centered above slot row, sans-serif, small. Four circular slots (~36px) in horizontal line with even spacing. Empty slots: dark interior (#00080a-ish) with bright cyan/aqua 2px border. Filled slots: medium blue interior with white/light icon. Slots 3 and 4 filled; 1 and 2 empty.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESOURCE GRID -->
+<section id="resources">
+  <div class="section-label">Evidence 06</div>
+  <h2 class="section-title">Resource Requirements Grid</h2>
+  <div class="evidence-note">
+    <strong>Source:</strong> <code>subnautica/sn07_1131.jpg</code> (top-right crop). Circular resource icons arranged in a 3×4 grid with fractional counts below. Green text when requirement met; red when unmet.
+  </div>
+  <div class="study-pair gs-reveal">
+    <div class="study-evidence">
+      <img src="ui_evidence/top_right_resources.png" alt="Resource grid from screenshot">
+      <div class="caption">Original crop — 308×151px from sn07_1131.jpg</div>
+    </div>
+    <div class="study-replication">
+      <div class="study-replication-label">Replication</div>
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <div class="resource-grid">
+          <div class="resource-cell"><div class="resource-icon">📋</div><div class="resource-count met">2/2</div></div>
+          <div class="resource-cell"><div class="resource-icon">💎</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell action"><div class="resource-icon">⚙️</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥞</div><div class="resource-count met">2/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">🍊</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥣</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell action"><div class="resource-icon">📱</div></div>
+          <div class="resource-cell"><div class="resource-icon">🥗</div><div class="resource-count met">2/2</div></div>
+          <div class="resource-cell"><div class="resource-icon">📚</div><div class="resource-count unmet">0/1</div></div>
+          <div class="resource-cell"><div class="resource-icon">📖</div><div class="resource-count unmet">0/1</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-desc" style="font-size:0.9rem; margin-top:-24px;">
+    <strong>Observed:</strong> Circular icons (~32px) in grid, dark fill with subtle border. Fraction text below each: green when current ≥ required, red when current < required. Rightmost column appears to contain larger action/category buttons with blue-tinted fill. No visible panel behind the grid.
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- DIALOGUE BOX -->
 <section id="subtitle">
-  <div class="section-label">Evidence 04</div>
+  <div class="section-label">Evidence 07</div>
   <h2 class="section-title">Dialogue Subtitle Box</h2>
   <div class="evidence-note">
     <strong>Source:</strong> <code>below-zero/bz02_6995.jpg</code>. A wide rounded rectangle with bright cyan border, floating above the bottom of the screen. Speaker name in yellow, dialogue in white.
