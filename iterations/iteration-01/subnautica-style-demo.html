@@ -336,16 +336,18 @@ function drawSeabedPlants(t) {
 /* ---------- Creepvines (broad ribbon-like with iconic seed clusters) ---------- */
 const creepvines = [];
 for (let i = 0; i < 34; i++) {
+  const segments = Math.floor(rand(14, 28));
   creepvines.push({
     x: rand(0, W),
     baseY: H + rand(10, 50),
     height: rand(H * 0.5, H * 1.15),
     stalkWidth: rand(6, 14),
-    segments: Math.floor(rand(14, 28)),
+    segments: segments,
     swaySpeed: rand(0.0005, 0.0016),
     swayPhase: rand(0, Math.PI * 2),
     seedCluster: true,
-    seedSide: Math.random() > 0.5 ? 1 : -1
+    seedSide: Math.random() > 0.5 ? 1 : -1,
+    seedIdx: Math.floor(segments * (Math.random() * 0.37 + 0.55))
   });
 }
 
@@ -409,7 +411,7 @@ function drawCreepvines(t) {
 
     // CREEPVINE SEED CLUSTERS
     if (vine.seedCluster) {
-      const topIdx = Math.floor(vine.segments * rand(0.55, 0.92));
+      const topIdx = vine.seedIdx;
       if (topIdx < leftPoints.length) {
         const sp = leftPoints[topIdx];
         const side = vine.seedSide;
